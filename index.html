@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Gesem Mejia's robotics, robot learning, safe autonomy, and embodied intelligence portfolio."
+    />
+    <title>Gesem Mejia - Robotics & Embodied Intelligence</title>
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <a class="wordmark" href="#home" aria-label="Gesem Mejia, home">
+        <span class="logo-bracket">[</span>gm<span class="logo-dot">.</span><span class="logo-bracket">]</span>
+      </a>
+      <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation">
+        <a href="#about">About</a>
+        <a href="#research">Research</a>
+        <a href="#work">Selected work</a>
+        <a href="#publications">Publications</a>
+        <a href="#experience">CV</a>
+        <a class="nav-contact" href="#contact">Let's talk</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="home">
+        <div class="hero-top mono">
+          <span>ROBOTICS / LEARNING / CONTROL</span>
+          <span>ROCHESTER, NY - 43.16 N</span>
+        </div>
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Hello, I'm</p>
+            <h1><span>Gesem</span><br />Mejia.</h1>
+            <p class="terminal" aria-live="polite">
+              Researching robot learning, safe autonomy, and world models.
+            </p>
+            <p class="hero-description">
+              Building intelligence that can understand, adapt, and act in the real world.
+            </p>
+            <p class="affiliation">
+              <strong>Ph.D. student at RIT</strong>
+              <span>Previously at Intel Labs</span>
+            </p>
+            <a class="button button-lime" href="#work">Explore my work</a>
+          </div>
+          <div class="hero-art" aria-label="Conceptual rendering of an autonomous underwater robot">
+            <div class="art-coordinates mono">
+              <span>FIG. 001</span>
+              <span>EMBODIED INTELLIGENCE</span>
+            </div>
+            <img class="robot-art" src="/images/robotics-hero.png" alt="Conceptual rendering of an autonomous underwater robot" />
+            <div class="art-footer mono">
+              <span>PERCEIVE / LEARN / ACT</span>
+              <span>CONCEPT STUDY</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-bottom">
+          <p class="hero-footnote mono">FROM PREDICTIVE MODELS TO PHYSICAL ROBOTS</p>
+          <button class="motion-button" type="button" aria-pressed="false">Motion on</button>
+          <a class="scroll-link mono" href="#about">SCROLL TO EXPLORE</a>
+        </div>
+      </section>
+
+      <section class="section about-section" id="about">
+        <div class="section-label mono"><span>01 / ABOUT</span><span>A LITTLE CONTEXT</span></div>
+        <div class="about-grid">
+          <aside class="profile-card">
+            <div class="portrait-frame">
+              <div class="monogram" aria-label="Gesem Mejia monogram">g<span>m</span><b>.</b></div>
+              <span class="profile-cross">+</span>
+            </div>
+            <div class="profile-caption">
+              <strong>Gesem Gudino Mejia</strong>
+              <span>Rochester, NY</span>
+            </div>
+          </aside>
+          <div class="about-copy">
+            <h2>Curious by nature.<br />Hands-on by design.</h2>
+            <p class="large-copy">
+              I work at the intersection of robot learning, perception, and control, turning ideas into systems that interact
+              with the physical world.
+            </p>
+            <p>
+              I'm a Ph.D. student in Electrical and Computer Engineering at Rochester Institute of Technology and a Graduate
+              Research Assistant in KAS Lab. My research focuses on safe decision-making for embodied agents,
+              self-supervised world models, and uncertainty-aware control.
+            </p>
+            <p>
+              Before RIT, I spent nearly five years at Intel Labs building multimodal learning systems. My path has taken me
+              from aerial robots and agricultural rovers to industrial AI and underwater autonomy.
+            </p>
+            <div class="about-links">
+              <a href="https://scholar.google.com/citations?hl=es&user=b63J0MYAAAAJ" target="_blank" rel="noreferrer">Google Scholar</a>
+              <a href="https://www.linkedin.com/in/gesem-mejia-3b07b7127/" target="_blank" rel="noreferrer">LinkedIn</a>
+              <a href="mailto:gg2673@rit.edu">Email</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section research-section" id="research">
+        <div class="section-label mono"><span>02 / RESEARCH</span><span>QUESTIONS I'M EXPLORING</span></div>
+        <div class="section-heading">
+          <h2>How do robots learn<br />to act with confidence?</h2>
+          <p>Three connected directions. One goal: more capable, reliable autonomy.</p>
+        </div>
+        <div class="research-grid">
+          <article class="research-item">
+            <span class="research-number mono">01 -</span>
+            <h3>World models</h3>
+            <p>Learning predictive latent representations through self-supervision, rather than reconstructing every observation.</p>
+            <span class="research-tags mono">JEPA / REPRESENTATION LEARNING</span>
+          </article>
+          <article class="research-item">
+            <span class="research-number mono">02 -</span>
+            <h3>Safe autonomy</h3>
+            <p>Bringing model uncertainty into decision-making, with predictive control and safety constraints.</p>
+            <span class="research-tags mono">MPC / CONTROL BARRIER FUNCTIONS</span>
+          </article>
+          <article class="research-item">
+            <span class="research-number mono">03 -</span>
+            <h3>Embodied learning</h3>
+            <p>Connecting perception and action under partial observability, informed by experience and demonstration.</p>
+            <span class="research-tags mono">ROBOT LEARNING / REINFORCEMENT LEARNING</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="section work-section" id="work">
+        <div class="section-label mono"><span>03 / SELECTED WORK</span><span>RESEARCH IN PRACTICE</span></div>
+        <div class="section-heading">
+          <h2>Ideas meet<br />the real world.</h2>
+          <p>A selection of research and engineering across robots, sensors, and people.</p>
+        </div>
+        <div class="project-grid">
+          <article class="project">
+            <div class="project-visual navigation-visual">
+              <span class="visual-label mono">01 / SAFETY-CONSTRAINED NAVIGATION</span>
+              <svg viewBox="0 0 520 225" role="img" aria-label="Conceptual navigation diagram">
+                <defs><pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M 24 0 L 0 0 0 24" fill="none" stroke="#25494b" stroke-width=".6"></path></pattern></defs>
+                <rect width="520" height="225" fill="url(#grid)"></rect><circle cx="275" cy="120" r="66" fill="none" stroke="#709493" stroke-dasharray="5 6"></circle><circle cx="275" cy="120" r="35" fill="#486869"></circle><path d="M45 171 C145 182 132 25 247 27 S345 175 465 59" fill="none" stroke="#c4f36b" stroke-width="3"></path><circle cx="45" cy="171" r="5" fill="#c4f36b"></circle><circle cx="465" cy="59" r="7" fill="none" stroke="#c4f36b" stroke-width="2"></circle><text x="29" y="199">START</text><text x="437" y="40">GOAL</text><text x="226" y="218">SAFETY BOUNDARY</text>
+              </svg>
+              <span class="visual-note mono">Conceptual path - not experimental data</span>
+            </div>
+            <div class="project-body">
+              <p class="project-meta mono"><span>SAFE AUTONOMY</span><span>01</span></p>
+              <h3>Safe navigation, below the surface.</h3>
+              <p>Combining predictive control and safety constraints to navigate underwater, even when the model is uncertain.</p>
+              <ul class="tags"><li>MPC + CBF</li><li>ROS 2</li><li>Fossen dynamics</li></ul>
+            </div>
+          </article>
+
+          <article class="project">
+            <div class="project-visual flow-visual">
+              <span class="visual-label mono">02 / HUMAN-IN-THE-LOOP LEARNING</span>
+              <span class="flow-input mono">EXPERT DEMONSTRATION</span>
+              <div class="flow-nodes"><span>RGB-D</span><span>Audio</span><span>Process spec</span></div>
+              <span class="flow-connector"></span><span class="flow-output">Multimodal action model</span>
+              <span class="flow-foot mono">TECHNICIAN GUIDANCE</span>
+            </div>
+            <div class="project-body">
+              <p class="project-meta mono"><span>MULTIMODAL LEARNING</span><span>02</span></p>
+              <h3>Learning from the people who know.</h3>
+              <p>From expert demonstrations to real-time guidance for semiconductor technicians. Multimodal AI, designed around people.</p>
+              <ul class="tags"><li>Learning from demonstration</li><li>RGB-D + Audio</li><li>Human-in-the-loop</li></ul>
+            </div>
+          </article>
+
+          <article class="project">
+            <div class="project-visual flow-visual rover">
+              <span class="visual-label mono">03 / ONBOARD PERCEPTION</span>
+              <span class="flow-input mono">STEREO OBSERVATIONS</span>
+              <div class="flow-nodes"><span>Vision</span><span>Color</span><span>Geometry</span></div>
+              <span class="flow-connector"></span><span class="flow-output">Localization + ripeness</span>
+              <span class="flow-foot mono">NVIDIA JETSON / ONBOARD ROBOT</span>
+            </div>
+            <div class="project-body">
+              <p class="project-meta mono"><span>PERCEPTION</span><span>03</span></p>
+              <h3>Seeing what's ready to grow.</h3>
+              <p>Onboard perception for strawberry localization and ripeness estimation under real compute constraints.</p>
+              <ul class="tags"><li>NVIDIA Jetson</li><li>MobileNetV2</li><li>Stereo vision</li></ul>
+            </div>
+          </article>
+
+          <article class="project">
+            <div class="project-visual flow-visual uav">
+              <span class="visual-label mono">04 / PERCEPTION TO CONTROL</span>
+              <span class="flow-input mono">CAMERA OBSERVATIONS</span>
+              <div class="flow-nodes"><span>Detect</span><span>Track</span><span>Follow</span></div>
+              <span class="flow-connector"></span><span class="flow-output">Visual feedback control</span>
+              <span class="flow-foot mono">PHYSICAL QUAD-ROTOR TESTS</span>
+            </div>
+            <div class="project-body">
+              <p class="project-meta mono"><span>AERIAL ROBOTICS</span><span>04</span></p>
+              <h3>Perception that takes flight.</h3>
+              <p>Real-time visual detection and person-following control, tested on physical quad-rotor platforms.</p>
+              <ul class="tags"><li>Computer vision</li><li>Tracking</li><li>Flight testing</li></ul>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section publications-section" id="publications">
+        <div class="section-label mono"><span>04 / PUBLICATIONS</span><span>SHARING THE WORK</span></div>
+        <div class="section-heading">
+          <h2>Written & published.</h2>
+          <a href="https://scholar.google.com/citations?hl=es&user=b63J0MYAAAAJ" target="_blank" rel="noreferrer">Google Scholar</a>
+        </div>
+        <p class="publication-note">Published under G. Mejia, G. G. Mejia, and G. Gudino.</p>
+        <article class="publication"><span class="pub-year mono">In preparation</span><div><h3>Control barrier functions for multi-agent hovering AUV navigation</h3><p class="pub-authors">G. Mejia, A. Acharya, and M. J. Khojasteh</p><p class="pub-venue">Manuscript in preparation</p></div><span class="draft">DRAFT</span></article>
+        <article class="publication"><span class="pub-year mono">2024</span><div><h3><a href="https://doi.org/10.48550/arXiv.2412.02638" target="_blank" rel="noreferrer">QA-toolbox: Conversational question-answering for process task guidance in manufacturing</a></h3><p class="pub-authors">R. Manuvinakurike, E. Watkins, C. Savur, A. Rhodes, S. Biswas, G. G. Mejia, R. Beckwith, S. Sahay, G. Raffa, and L. Nachman</p><p class="pub-venue">NeurIPS SFLLM Workshop</p></div><a class="pub-link" href="https://doi.org/10.48550/arXiv.2412.02638" target="_blank" rel="noreferrer">Read</a></article>
+        <article class="publication"><span class="pub-year mono">2023</span><div><h3><a href="https://doi.org/10.1016/j.engappai.2022.105810" target="_blank" rel="noreferrer">Strawberry localization in a ridge planting with an autonomous rover</a></h3><p class="pub-authors">G. Mejia, A. M. Montes de Oca, and G. Flores</p><p class="pub-venue">Engineering Applications of Artificial Intelligence - 119, 105810</p></div><a class="pub-link" href="https://doi.org/10.1016/j.engappai.2022.105810" target="_blank" rel="noreferrer">Read</a></article>
+      </section>
+
+      <section class="section experience-section" id="experience">
+        <div class="section-label mono"><span>05 / EXPERIENCE & EDUCATION</span><span>THE PATH SO FAR</span></div>
+        <div class="career-grid">
+          <div>
+            <h2>From building<br />to understanding.</h2>
+            <p class="career-intro">Research grounded in years of bringing perception and learning onto physical systems.</p>
+            <h3 class="education-title">EDUCATION</h3>
+            <div class="education"><span class="mono">2026 - PRESENT</span><h4>Ph.D. - Electrical & Computer Engineering</h4><p>Rochester Institute of Technology</p><small>Fully funded graduate research assistantship</small></div>
+            <div class="education"><span class="mono">2019 - 2021</span><h4>M.Sc. - Mechatronics</h4><p>Centro de Investigaciones en Optica</p><small>Specialization in path planning for robotics</small></div>
+            <div class="education"><span class="mono">2015 - 2019</span><h4>B.Eng. - Mechatronics</h4><p>Universidad Tecnologica de Leon</p><small>Minor in Optics</small></div>
+          </div>
+          <div class="timeline">
+            <article class="timeline-item"><span class="mono">2026 - PRESENT</span><h3>KAS Lab - Rochester Institute of Technology</h3><h4>Graduate Research Assistant</h4><p>Self-supervised world models and safe decision-making under partial observability. Advised by Prof. Mohammad Javad Khojasteh.</p></article>
+            <article class="timeline-item"><span class="mono">2021 - 2026</span><h3>Intel Labs</h3><h4>Software Research Engineer / Scientist</h4><p>Architected MARIE for multimodal task guidance. Developed RGB-D perception for Kidspace and resource scheduling for distributed AI workloads in GreenAI.</p></article>
+            <article class="timeline-item"><span class="mono">2019 - 2021</span><h3>Centro de Investigaciones en Optica</h3><h4>M.Sc. Research - Robotics & Perception Lab</h4><p>Deep reinforcement learning for manipulation and UAV navigation; autonomous rover perception for agriculture.</p></article>
+            <article class="timeline-item"><span class="mono">2017 - 2019</span><h3>Robotics & Perception Lab - CIO</h3><h4>Undergraduate Research Assistant</h4><p>Real-time visual detection and person-following control on physical quad-rotor UAVs.</p></article>
+          </div>
+        </div>
+        <div class="toolbox"><span class="mono">IN MY TOOLBOX</span><p>Python <i>/</i> C++ <i>/</i> PyTorch <i>/</i> ROS 2 <i>/</i> OpenCV <i>/</i> Gazebo <i>/</i> MuJoCo <i>/</i> NVIDIA Jetson</p></div>
+      </section>
+
+      <section class="contact-section" id="contact">
+        <div class="section-label mono"><span>06 / GET IN TOUCH</span><span>LET'S BUILD SOMETHING MEANINGFUL</span></div>
+        <div class="contact-grid">
+          <div>
+            <p class="contact-kicker">Have a question, an idea, or a research opportunity?</p>
+            <h2>Let's connect<span>.</span></h2>
+            <a class="contact-email" href="mailto:gg2673@rit.edu">gg2673@rit.edu</a>
+          </div>
+          <aside class="contact-aside">
+            <p>I'm interested in Ph.D. research internships in robot learning, world models, and autonomous vehicles.</p>
+            <div class="about-links">
+              <a href="https://www.linkedin.com/in/gesem-mejia-3b07b7127/" target="_blank" rel="noreferrer">LinkedIn</a>
+              <a href="https://scholar.google.com/citations?hl=es&user=b63J0MYAAAAJ" target="_blank" rel="noreferrer">Scholar</a>
+            </div>
+          </aside>
+        </div>
+        <footer>
+          <span>© 2026 Gesem Mejia</span>
+          <span class="mono">ALWAYS LEARNING.</span>
+          <a href="#home">Back to top</a>
+        </footer>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
