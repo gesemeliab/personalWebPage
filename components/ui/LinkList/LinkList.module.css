@@ -1,0 +1,30 @@
+.linkList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 27px;
+  margin-top: 28px;
+}
+
+.linkList a {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: .8125rem;
+  border-bottom: 1px solid #b4c4b3;
+  padding-bottom: 6px;
+}
+
+.linkList a:hover {
+  color: #58881b;
+}
+
+/* Variant: inside the contact aside, on the dark panel. */
+.linkList.aside {
+  gap: 24px;
+}
+
+@media (max-width: 760px) {
+  .linkList.aside {
+    margin-top: 24px;
+  }
+}

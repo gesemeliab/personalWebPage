@@ -1,0 +1,43 @@
+.footer {
+  max-width: 1408px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 28px 0;
+  border-top: 1px solid #ffffff20;
+  color: #81917c;
+  font-size: .75rem;
+}
+
+.footer :global(.mono) {
+  font-size: .75rem;
+}
+
+.footer a {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.footer a svg {
+  transform: rotate(-90deg);
+}
+
+@media (max-width: 760px) {
+  .footer {
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: .75rem;
+  }
+
+  .footer > :global(.mono) {
+    display: none;
+  }
+}
+
+@media print {
+  .footer {
+    display: none;
+  }
+}

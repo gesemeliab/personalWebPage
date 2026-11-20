@@ -1,0 +1,300 @@
+.hero {
+  padding: 30px 6% 0;
+  background: var(--ink);
+  color: #f3f5ed;
+  overflow: hidden;
+}
+
+.heroTop {
+  display: flex;
+  justify-content: space-between;
+  color: #8e9e94;
+  font-size: .75rem;
+  letter-spacing: .12em;
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 2%;
+  padding: 58px 0 48px;
+  max-width: 1440px;
+  margin: auto;
+}
+
+.eyebrow {
+  font-size: 1.15rem;
+  color: #b7c4b8;
+  margin-bottom: 14px;
+}
+
+.hero h1 {
+  font-size: clamp(4.4rem, 7.6vw, 7.8rem);
+  line-height: .99;
+  letter-spacing: -.055em;
+  font-weight: 500;
+}
+
+.hero h1>span {
+  color: var(--lime);
+}
+
+.terminal {
+  font-family: var(--mono);
+  font-size: clamp(.875rem, 1.3vw, 1.15rem);
+  line-height: 1.7;
+  min-height: 2em;
+  margin-top: 28px;
+  color: #9caea1;
+}
+
+.typed,
+.caret {
+  color: var(--lime);
+}
+
+.caret {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.heroDescription {
+  font-size: 1.1rem;
+  color: #c1cbc2;
+  line-height: 1.6;
+  margin-top: 20px;
+}
+
+.affiliation {
+  font-size: .8125rem;
+  color: #c0c9c0;
+  margin: 27px 0 28px;
+}
+
+.affiliation strong {
+  font-weight: 500;
+  color: #eef3e8;
+}
+
+.affiliation span {
+  display: block;
+  color: #86968d;
+}
+
+/* Artwork ---------------------------------------------------------------- */
+
+.heroArt {
+  align-self: stretch;
+  min-height: 410px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  perspective: 1000px;
+}
+
+.robotArt {
+  display: block;
+  width: 116%;
+  height: auto;
+  max-height: 520px;
+  object-fit: contain;
+  margin-left: -8%;
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform .35s;
+  mix-blend-mode: lighten;
+}
+
+.artCoordinates,
+.artFooter {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  color: #819387;
+  font-size: .75rem;
+  z-index: 1;
+}
+
+.artCoordinates {
+  margin-top: 25px;
+}
+
+.artFooter {
+  margin-top: 10px;
+  padding-top: 20px;
+  border-top: 1px solid #a0bea22b;
+}
+
+.artFooter:before {
+  content: "+";
+  position: absolute;
+  top: -8px;
+  left: 49%;
+  color: var(--lime);
+}
+
+/* Footer bar ------------------------------------------------------------- */
+
+.heroBottom {
+  max-width: 1440px;
+  margin: auto;
+  border-top: 1px solid #ffffff1b;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  min-height: 77px;
+  color: #96a599;
+}
+
+.heroFootnote {
+  font-size: .75rem;
+}
+
+.scrollLink {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  font-size: .75rem;
+}
+
+/* Motion opt-out --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .robotArt {
+    transform: none !important;
+  }
+}
+
+/* Breakpoints ------------------------------------------------------------ */
+
+@media (min-width: 1600px) {
+  .hero {
+    padding-left: max(6%, calc((100vw - 1408px)/2));
+    padding-right: max(6%, calc((100vw - 1408px)/2));
+  }
+}
+
+@media (max-width: 1000px) {
+  .hero {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+
+  .hero h1 {
+    font-size: 6rem;
+  }
+
+  .heroGrid {
+    padding-top: 48px;
+  }
+
+  .heroArt {
+    min-height: 350px;
+  }
+
+  .heroTop {
+    font-size: .75rem;
+  }
+
+  .heroFootnote {
+    display: none;
+  }
+
+  /* The footnote is the only other child of .heroBottom, so once it is hidden
+     the scroll link has to hold the right edge on its own. */
+  .scrollLink {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .hero {
+    padding-top: 22px;
+  }
+
+  .heroTop span:last-child {
+    display: none;
+  }
+
+  .heroGrid {
+    grid-template-columns: 1fr;
+    padding-top: 40px;
+    gap: 20px;
+  }
+
+  .hero h1 {
+    font-size: clamp(4.8rem, 18vw, 7.5rem);
+    line-height: .95;
+  }
+
+  .heroCopy {
+    position: relative;
+    z-index: 1;
+  }
+
+  .heroDescription {
+    font-size: 1.05rem;
+  }
+
+  .heroArt {
+    min-height: 0;
+    margin-top: 22px;
+    max-width: 560px;
+    width: 100%;
+    justify-self: center;
+  }
+
+  .robotArt {
+    width: 100%;
+    margin-left: 0;
+    max-height: 370px;
+  }
+
+  .artCoordinates,
+  .artFooter {
+    margin-top: 0;
+  }
+
+  .heroBottom {
+    min-height: 65px;
+    gap: 15px;
+  }
+
+  .scrollLink {
+    font-size: .75rem;
+    gap: 8px;
+  }
+}
+
+@media print {
+  .heroArt,
+  .scrollLink {
+    display: none;
+  }
+
+  .hero {
+    background: #fff;
+    color: #111;
+    padding: 25px 0;
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+  }
+
+  .heroGrid {
+    display: block;
+  }
+
+  .heroDescription,
+  .affiliation {
+    color: #333;
+  }
+}

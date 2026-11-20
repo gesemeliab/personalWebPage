@@ -1,0 +1,130 @@
+.aboutGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.62fr;
+  gap: 9%;
+  align-items: center;
+}
+
+.profileCard {
+  max-width: 345px;
+  transform: rotate(-2deg);
+  transition: transform .45s;
+  align-self: center;
+}
+
+.profileCard:hover {
+  transform: rotate(0) translateY(-5px);
+}
+
+.portraitFrame {
+  height: 325px;
+  background: #dce3d9;
+  position: relative;
+  overflow: hidden;
+  border-radius: 3px;
+}
+
+.portraitFrame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* The source is a tall 9:16 headshot and the frame is near-square, so bias the
+     crop upwards - centred would cut the top of the head off. */
+  object-position: center 16%;
+}
+
+.profileCross {
+  position: absolute;
+  bottom: 17px;
+  left: 22px;
+  font-size: 1.5rem;
+  color: #61785e;
+}
+
+.profileCaption {
+  padding: 20px 0;
+}
+
+.profileCaption strong {
+  font-family: var(--font-display), sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  display: block;
+}
+
+.profileCaption>span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .75rem;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+.aboutCopy .largeCopy {
+  font-size: 1.2rem;
+  color: #304a3b;
+  margin-top: 26px;
+}
+
+.aboutCopy>p {
+  color: #5e6d63;
+  margin-top: 18px;
+}
+
+/* Motion opt-out --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .profileCard {
+    transform: none !important;
+  }
+}
+
+/* Breakpoints ------------------------------------------------------------ */
+
+@media (max-width: 1000px) {
+  .aboutGrid {
+    gap: 6%;
+    grid-template-columns: 1fr 1.5fr;
+  }
+
+  .portraitFrame {
+    height: 290px;
+  }
+
+}
+
+@media (max-width: 760px) {
+  .aboutGrid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .profileCard {
+    width: 230px;
+    max-width: 100%;
+    justify-self: start;
+  }
+
+  .portraitFrame {
+    height: 210px;
+  }
+
+  .profileCaption {
+    padding: 15px 0;
+  }
+
+  .aboutCopy .largeCopy {
+    font-size: 1.125rem;
+  }
+}
+
+@media print {
+  .profileCard {
+    display: none;
+  }
+
+  .aboutGrid {
+    display: block;
+  }
+}

@@ -1,0 +1,101 @@
+.publicationsSection {
+  composes: section from "@/styles/section.module.css";
+  padding-top: 75px;
+}
+
+.publicationNote {
+  font-size: .8125rem;
+  color: #6c786e;
+  margin-bottom: 38px;
+}
+
+.publication {
+  display: grid;
+  grid-template-columns: 115px 1fr 55px;
+  gap: 25px;
+  padding: 27px 0;
+  border-top: 1px solid var(--line);
+  align-items: start;
+}
+
+.pubYear {
+  color: #6c7c65;
+  line-height: 1.8;
+  font-size: .75rem;
+}
+
+.publication h3 {
+  font-size: 1.125rem;
+  line-height: 1.45;
+  letter-spacing: -.015em;
+}
+
+.publication h3 a:hover {
+  color: #527f21;
+}
+
+.pubAuthors {
+  font-size: .8125rem;
+  color: #788279;
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
+.pubVenue {
+  font-size: .8125rem;
+  color: #456131;
+  margin-top: 7px;
+}
+
+.pubLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #d2dccb;
+  border-radius: 50%;
+  transition: background .2s;
+}
+
+.pubLink:hover {
+  background: var(--lime);
+}
+
+.draft {
+  font-size: .75rem;
+  padding: 7px 0;
+  color: #7b876e;
+}
+
+@media (max-width: 760px) {
+  .publication {
+    grid-template-columns: 1fr 36px;
+    gap: 8px 15px;
+    padding: 24px 0;
+  }
+
+  .pubYear {
+    grid-column: 1/-1;
+    font-size: .75rem;
+  }
+
+  .pubLink {
+    width: 34px;
+    height: 34px;
+  }
+
+  .publication h3 {
+    font-size: 1.0625rem;
+  }
+
+  .publicationNote {
+    margin-bottom: 25px;
+  }
+}
+
+@media print {
+  .publication {
+    break-inside: avoid;
+  }
+}

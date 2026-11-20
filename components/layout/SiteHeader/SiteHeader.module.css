@@ -1,0 +1,55 @@
+.siteHeader {
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6%;
+  background: var(--ink);
+  color: #eef3eb;
+  border-bottom: 1px solid #ffffff16;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.wordmark {
+  font-family: var(--mono);
+  font-size: 1.7rem;
+  letter-spacing: -.13em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.logoBracket {
+  color: #97a39a;
+  font-weight: 400;
+}
+
+.logoDot {
+  color: var(--lime);
+}
+
+@media (min-width: 1600px) {
+  .siteHeader {
+    padding-left: max(6%, calc((100vw - 1408px)/2));
+    padding-right: max(6%, calc((100vw - 1408px)/2));
+  }
+}
+
+@media (max-width: 1000px) {
+  .siteHeader {
+    padding: 0 5%;
+  }
+}
+
+@media (max-width: 760px) {
+  .siteHeader {
+    height: 72px;
+  }
+}
+
+@media print {
+  .siteHeader {
+    display: none;
+  }
+}

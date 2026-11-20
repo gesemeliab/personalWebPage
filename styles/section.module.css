@@ -1,0 +1,34 @@
+/*
+  Shared section shell.
+
+  The one piece of layout every page section starts from. Sections that need a
+  different rhythm compose this class rather than redefining the padding:
+
+    .workSection { composes: section from "@/styles/section.module.css"; }
+*/
+
+.section {
+  padding: 75px 6% 90px;
+  max-width: 1600px;
+  margin: auto;
+}
+
+@media (max-width: 1000px) {
+  .section {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+}
+
+@media (max-width: 760px) {
+  .section {
+    padding-top: 50px;
+    padding-bottom: 55px;
+  }
+}
+
+@media print {
+  .section {
+    padding: 25px 0;
+  }
+}

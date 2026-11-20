@@ -1,0 +1,148 @@
+/*
+  Global style layer.
+
+  Everything here is deliberately unscoped, because it either targets bare
+  elements or is a utility/state class that any component may use. Everything
+  else lives in a *.module.css file next to the component that owns it.
+
+  Imported once, from app/layout.js, so it is always emitted before component
+  styles and can be safely overridden by them.
+*/
+
+/* Reset ------------------------------------------------------------------ */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+button,
+a,
+summary {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a,
+button,
+summary {
+  touch-action: manipulation;
+}
+
+button,
+summary {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible {
+  outline: 3px solid #609700;
+  outline-offset: 5px;
+}
+
+/* Design tokens ----------------------------------------------------------
+   The --font-* variables are provided by next/font in app/layout.js. */
+
+:root {
+  font-family: var(--font-sans), Arial, sans-serif;
+  color: #192421;
+  background: #f5f6f1;
+  font-synthesis: none;
+  --ink: #101817;
+  --lime: #c4f36b;
+  --muted: #65716b;
+  --line: #d8ded6;
+  --mono: var(--font-mono), monospace;
+  --display: var(--font-display), Arial, sans-serif;
+}
+
+/* Element typography ----------------------------------------------------- */
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+  font-weight: 500;
+}
+
+h2 {
+  font-size: clamp(2.1rem, 3.6vw, 3.5rem);
+  line-height: 1.14;
+  letter-spacing: -.045em;
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* Utilities -------------------------------------------------------------- */
+
+.mono {
+  font-family: var(--mono);
+  font-size: .75rem;
+  letter-spacing: .06em;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Preference and viewport overrides -------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *:before,
+  *:after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (max-width: 760px) {
+  html {
+    scroll-padding-top: 85px;
+  }
+}

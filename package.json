@@ -2,17 +2,26 @@
   "name": "gesem-mejia-portfolio",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
-  "packageManager": "pnpm@11.19.0",
+  "description": "Personal portfolio site for Gesem Mejia - robotics, robot learning and embodied intelligence.",
+  "license": "MIT",
   "engines": {
     "node": ">=24 <25"
   },
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
-    "build": "vite build",
-    "preview": "vite preview --host 127.0.0.1"
+    "dev": "next dev -H 127.0.0.1",
+    "build": "next build",
+    "preview": "serve out -l tcp://127.0.0.1:4173",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "lucide-react": "^1.47.0",
+    "next": "^16.3.5",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "vite": "^7.1.5"
+    "eslint": "^9.39.0",
+    "eslint-config-next": "^16.3.5",
+    "serve": "^14.2.5"
   }
 }

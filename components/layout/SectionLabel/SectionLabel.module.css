@@ -1,0 +1,48 @@
+.sectionLabel {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  margin-bottom: 49px;
+  color: #617267;
+  font-size: .75rem;
+}
+
+/* Variants. Compounded with the base class so they win on specificity
+   regardless of the order the stylesheets end up in. */
+
+.sectionLabel.plain {
+  border: 0;
+  padding-top: 0;
+}
+
+.sectionLabel.onDark {
+  border-color: #ffffff20;
+  color: #91a28e;
+}
+
+.sectionLabel.contained {
+  max-width: 1408px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 760px) {
+  .sectionLabel {
+    margin-bottom: 32px;
+    font-size: .75rem;
+    gap: 15px;
+    line-height: 1.5;
+  }
+
+  .sectionLabel>span:last-child {
+    text-align: right;
+    max-width: 45%;
+  }
+}
+
+@media print {
+  .sectionLabel {
+    margin-bottom: 20px;
+  }
+}

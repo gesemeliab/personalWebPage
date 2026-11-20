@@ -1,0 +1,44 @@
+.toolbox {
+  margin-top: 60px;
+  padding-top: 27px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: start;
+  gap: 40px;
+}
+
+.toolbox> :global(.mono) {
+  font-size: .75rem;
+  color: #728068;
+  white-space: nowrap;
+  padding-top: 7px;
+}
+
+.toolbox p {
+  font-family: var(--mono);
+  font-size: .8125rem;
+  line-height: 2.3;
+  color: #506345;
+}
+
+.toolbox i {
+  font-style: normal;
+  color: #abb7a1;
+  padding: 0 10px;
+}
+
+@media (max-width: 760px) {
+  .toolbox {
+    margin-top: 20px;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .toolbox p {
+    font-size: .75rem;
+  }
+
+  .toolbox i {
+    padding: 0 5px;
+  }
+}

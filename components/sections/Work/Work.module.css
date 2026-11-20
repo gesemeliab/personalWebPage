@@ -1,0 +1,317 @@
+.workSection {
+  composes: section from "@/styles/section.module.css";
+  background: #eaf0e6;
+  max-width: none;
+  padding-top: 70px;
+}
+
+/* The panel is full-bleed; its contents are not. SectionLabel and
+   SectionHeading get the same treatment through their `contained` variant. */
+.projectGrid {
+  max-width: 1408px;
+  margin-left: auto;
+  margin-right: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 42px 36px;
+}
+
+.project {
+  background: #f8faf5;
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid #dce4d7;
+}
+
+/* Visuals ---------------------------------------------------------------- */
+
+.projectVisual {
+  height: 292px;
+  position: relative;
+  overflow: hidden;
+}
+
+.visualLabel {
+  position: absolute;
+  top: 21px;
+  left: 24px;
+  color: #8fac9f;
+  font-size: .75rem;
+  letter-spacing: .04em;
+  z-index: 1;
+}
+
+.navigationVisual {
+  background: #132e30;
+  padding: 43px 15px 24px;
+}
+
+.navigationVisual svg {
+  width: 100%;
+  height: 100%;
+}
+
+.navigationVisual svg text {
+  fill: #a8c8c6;
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.visualNote {
+  position: absolute;
+  bottom: 12px;
+  right: 18px;
+  font-size: .75rem;
+  color: #90afac;
+}
+
+.flowVisual {
+  background: #dde7d3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 70px 20px 20px;
+}
+
+.flowVisual .visualLabel {
+  color: #62784f;
+}
+
+.flowInput {
+  font-size: .75rem;
+  color: #5d7450;
+}
+
+.flowNodes {
+  display: flex;
+  gap: 16px;
+  width: 88%;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.flowNodes>span {
+  background: #f4f7ee;
+  border: 1px solid #b7c8a8;
+  padding: 13px 8px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: .75rem;
+  flex: 1;
+  max-width: 125px;
+}
+
+.flowConnector {
+  height: 20px;
+  width: 1px;
+  background: #7c936b;
+}
+
+.flowOutput {
+  border: 1px solid #78945b;
+  background: #c6dcb0;
+  color: #3d582c;
+  padding: 12px 26px;
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: .8125rem;
+}
+
+.flowFoot {
+  font-size: .75rem;
+  color: #657950;
+  margin-top: 20px;
+}
+
+/* Flow palette variants. Order matters: these follow the base .flowVisual
+   rules above so they win the tie on specificity. */
+
+.flowVisual.rover {
+  background: #d2dbcd;
+}
+
+.flowVisual.uav {
+  background: #dbe3e8;
+}
+
+.uav .visualLabel,
+.uav .flowInput,
+.uav .flowFoot {
+  color: #596d80;
+}
+
+.uav .flowOutput {
+  background: #becfdd;
+  border-color: #8da6b6;
+  color: #314f62;
+}
+
+.uav .flowNodes>span {
+  border-color: #bacbd5;
+  background: #edf3f5;
+  color: #35556b;
+}
+
+/* Card body -------------------------------------------------------------- */
+
+.projectBody {
+  padding: 27px 30px 0;
+}
+
+.projectMeta {
+  display: flex;
+  justify-content: space-between;
+  color: #68805c;
+  font-size: .75rem;
+  margin-bottom: 13px;
+}
+
+.project h3 {
+  font-size: 1.7rem;
+  letter-spacing: -.04em;
+  line-height: 1.2;
+  margin-bottom: 15px;
+}
+
+.projectBody>p {
+  color: #617063;
+  font-size: 1rem;
+}
+
+.tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0;
+  margin: 24px 0;
+}
+
+.tags li {
+  padding: 5px 8px;
+  border: 1px solid #d6dfce;
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: .75rem;
+  color: #5c7051;
+}
+
+/* Behind-the-project expander -------------------------------------------- */
+
+.project details {
+  border-top: 1px solid #dce4d6;
+}
+
+.project summary {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 58px;
+  font-size: .8125rem;
+  font-weight: 500;
+}
+
+.project summary::-webkit-details-marker {
+  display: none;
+}
+
+.project summary svg {
+  transition: transform .25s;
+}
+
+.project details[open] summary svg {
+  transform: rotate(45deg);
+}
+
+.projectDetail {
+  padding: 2px 0 25px;
+}
+
+.projectDetail> :global(.mono) {
+  font-size: .75rem;
+  color: #68805c;
+}
+
+.projectDetail h4 {
+  margin: 15px 0 10px;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.projectDetail p {
+  font-size: .875rem;
+  color: #617063;
+  margin-bottom: 12px;
+}
+
+.projectDetail a {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #a3bb91;
+  padding-bottom: 4px;
+  font-size: .8125rem;
+}
+
+/* Breakpoints ------------------------------------------------------------ */
+
+@media (min-width: 1600px) {
+  .workSection {
+    padding-left: max(6%, calc((100vw - 1408px)/2));
+    padding-right: max(6%, calc((100vw - 1408px)/2));
+  }
+}
+
+@media (max-width: 1000px) {
+  .projectBody {
+    padding: 24px 24px 0;
+  }
+
+  .project h3 {
+    font-size: 1.5rem;
+  }
+
+  .projectVisual {
+    height: 270px;
+  }
+}
+
+@media (max-width: 760px) {
+  .projectGrid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .projectVisual {
+    height: 280px;
+  }
+
+  .project h3 {
+    font-size: 1.6rem;
+  }
+
+  .projectBody {
+    padding: 24px 22px 0;
+  }
+}
+
+@media print {
+  .projectVisual {
+    display: none;
+  }
+
+  .projectGrid {
+    display: block;
+  }
+
+  .project {
+    break-inside: avoid;
+    margin: 20px 0;
+  }
+
+  .project details .projectDetail {
+    display: block;
+  }
+}

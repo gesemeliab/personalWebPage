@@ -1,0 +1,133 @@
+.experienceSection {
+  composes: section from "@/styles/section.module.css";
+  padding-top: 0;
+}
+
+.careerGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.12fr;
+  gap: 10%;
+}
+
+.careerIntro {
+  color: var(--muted);
+  max-width: 370px;
+  margin-top: 20px;
+}
+
+/* Education -------------------------------------------------------------- */
+
+.educationTitle {
+  font-size: .75rem;
+  letter-spacing: .1em;
+  color: #6a7f5e;
+  margin-top: 46px;
+  margin-bottom: 28px;
+}
+
+.education {
+  margin: 23px 0;
+}
+
+.education> :global(.mono) {
+  font-size: .75rem;
+  color: #798872;
+}
+
+.education h4 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 6px 0;
+}
+
+.education p {
+  font-size: .875rem;
+  color: #667361;
+}
+
+.education small {
+  font-size: .75rem;
+  color: #82907b;
+  line-height: 1.5;
+}
+
+/* Timeline --------------------------------------------------------------- */
+
+.timeline {
+  border-left: 1px solid #cbd6c6;
+  padding-left: 34px;
+}
+
+.timelineItem {
+  position: relative;
+  padding-bottom: 36px;
+}
+
+.timelineItem:before {
+  content: "";
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border: 1px solid #728b62;
+  background: #f5f6f1;
+  left: -39px;
+  top: 6px;
+  border-radius: 50%;
+}
+
+.timelineItem:first-child:before {
+  background: #779e48;
+}
+
+.timelineItem> :global(.mono) {
+  color: #73816c;
+  font-size: .75rem;
+}
+
+.timelineItem h3 {
+  font-size: 1.25rem;
+  line-height: 1.4;
+  margin: 12px 0 5px;
+}
+
+.timelineItem h4 {
+  font-weight: 400;
+  font-size: .875rem;
+  color: #607054;
+  margin-bottom: 13px;
+}
+
+.timelineItem p {
+  font-size: 1rem;
+  color: #778170;
+}
+
+/* Breakpoints ------------------------------------------------------------ */
+
+@media (max-width: 1000px) {
+  .careerGrid {
+    gap: 7%;
+  }
+}
+
+@media (max-width: 760px) {
+  .careerGrid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .timeline {
+    padding-left: 25px;
+    margin-left: 4px;
+  }
+
+  .timelineItem:before {
+    left: -30px;
+  }
+}
+
+@media print {
+  .careerGrid {
+    display: block;
+  }
+}

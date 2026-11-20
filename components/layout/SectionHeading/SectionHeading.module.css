@@ -1,0 +1,46 @@
+.sectionHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 36px;
+  margin-bottom: 42px;
+}
+
+.sectionHeading>p {
+  max-width: 370px;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.sectionHeading>a {
+  font-size: .875rem;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  white-space: nowrap;
+}
+
+/* Variants, compounded with the base class so they win on specificity. */
+
+.sectionHeading.tight {
+  margin-bottom: 12px;
+}
+
+.sectionHeading.contained {
+  max-width: 1408px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 760px) {
+  .sectionHeading {
+    align-items: start;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .sectionHeading>p {
+    font-size: 1rem;
+  }
+}
