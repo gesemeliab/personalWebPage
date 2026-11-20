@@ -2,43 +2,78 @@
   margin-top: 60px;
   padding-top: 27px;
   border-top: 1px solid var(--line);
-  display: flex;
-  align-items: start;
-  gap: 40px;
 }
 
-.toolbox> :global(.mono) {
+.toolbox>h3 {
+  font-family: var(--mono);
+  font-weight: 400;
   font-size: .75rem;
   color: #728068;
-  white-space: nowrap;
-  padding-top: 7px;
+  margin-bottom: 26px;
 }
 
-.toolbox p {
+.skillGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 28px;
+  margin: 0;
+}
+
+.skillGroup {
+  border-left: 1px solid #cbd6c6;
+  padding-left: 18px;
+}
+
+.skillGroup:first-child {
+  border-left-color: #779e48;
+}
+
+.skillGroup dt {
+  font-family: var(--display);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -.01em;
+  margin-bottom: 14px;
+}
+
+.skillGroup dd {
+  margin: 0;
+}
+
+.skillGroup ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skillGroup li {
+  padding: 4px 8px;
+  border: 1px solid #d6dfce;
+  border-radius: 3px;
+  background: #fbfcf8;
   font-family: var(--mono);
-  font-size: .8125rem;
-  line-height: 2.3;
-  color: #506345;
+  font-size: .75rem;
+  line-height: 1.45;
+  color: #4f6245;
 }
 
-.toolbox i {
-  font-style: normal;
-  color: #abb7a1;
-  padding: 0 10px;
+@media (max-width: 1200px) {
+  .skillGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 30px 28px;
+  }
 }
 
 @media (max-width: 760px) {
   .toolbox {
     margin-top: 20px;
-    flex-direction: column;
-    gap: 12px;
   }
 
-  .toolbox p {
-    font-size: .75rem;
-  }
-
-  .toolbox i {
-    padding: 0 5px;
+  .skillGrid {
+    grid-template-columns: 1fr;
+    gap: 24px;
   }
 }

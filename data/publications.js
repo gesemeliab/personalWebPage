@@ -1,21 +1,23 @@
 /**
  * Publications, newest first.
  *
- * Mirrors content/profile.json from the original source. An entry without a
- * `href` is unpublished and renders the draft badge instead of a link.
+ * An entry without a `href` renders its `status` badge (default "DRAFT")
+ * instead of a link. Any of the names in `selfNames` is set in bold wherever it
+ * appears in an author list.
  */
 
 export const publicationNote = "Published under G. Mejia, G. G. Mejia, and G. Gudino.";
 
+export const selfNames = ["G. G. Mejia", "G. Mejia", "G. Gudino"];
+
 export const publications = [
   {
     id: "p6",
-    year: "In preparation",
-    title:
-      "Control barrier functions for multi-agent hovering AUV navigation",
-    authors:
-      "G. Mejia, A. Acharya, and M. J. Khojasteh",
-    venue: "Manuscript in preparation",
+    year: "2026",
+    title: "Sound Advice: Vision-Language-Conditioned RGB-Sonar Fusion under Camera Degradation",
+    authors: "G. Mejia, A. Acharya, K. Abaid, M. Chaickowsky, and M. J. Khojasteh",
+    venue: "IEEE/CVF CVPR 2027 · Under review",
+    status: "UNDER REVIEW",
   },
   {
     id: "p1",
@@ -30,10 +32,8 @@ export const publications = [
   {
     id: "p2",
     year: "2023",
-    title:
-      "Strawberry localization in a ridge planting with an autonomous rover",
-    authors:
-      "G. Mejia, A. M. Montes de Oca, and G. Flores",
+    title: "Strawberry localization in a ridge planting with an autonomous rover",
+    authors: "G. Mejia, A. M. Montes de Oca, and G. Flores",
     venue: "Engineering Applications of Artificial Intelligence · 119, 105810",
     href: "https://doi.org/10.1016/j.engappai.2022.105810",
   },
@@ -52,8 +52,7 @@ export const publications = [
     year: "2022",
     title:
       "Object recognition and tracking using Haar-like features cascade classifiers: Application to a quad-rotor UAV",
-    authors:
-      "L. Arreola, G. Gudino, and G. Flores",
+    authors: "L. Arreola, G. Gudino, and G. Flores",
     venue: "IEEE CoDIT · 45–50",
     href: "https://doi.org/10.1109/CoDIT55151.2022.9803981",
   },

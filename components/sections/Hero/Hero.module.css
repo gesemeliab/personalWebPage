@@ -23,6 +23,54 @@
   margin: auto;
 }
 
+/* Availability chip: the one thing a recruiter needs to know first. */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 26px;
+  padding: 7px 14px 7px 12px;
+  border: 1px solid #c4f36b45;
+  border-radius: 999px;
+  background: #c4f36b0f;
+  color: #dcefc0;
+  transition: background .2s, border-color .2s;
+}
+
+.status:hover {
+  background: #c4f36b1f;
+  border-color: #c4f36b80;
+}
+
+.statusDot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--lime);
+}
+
+.statusDot:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--lime);
+  animation: pulse 2.2s ease-out infinite;
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+    opacity: .7;
+  }
+
+  to {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
 .eyebrow {
   font-size: 1.15rem;
   color: #b7c4b8;
@@ -69,6 +117,7 @@
   color: #c1cbc2;
   line-height: 1.6;
   margin-top: 20px;
+  max-width: 34em;
 }
 
 .affiliation {
@@ -139,6 +188,60 @@
   color: var(--lime);
 }
 
+/* Evidence strip --------------------------------------------------------- */
+
+.highlights {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid #ffffff1b;
+}
+
+.highlight {
+  padding: 30px 26px 32px;
+  border-left: 1px solid #ffffff12;
+}
+
+.highlight:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.highlight dt {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.highlightValue {
+  font-family: var(--display);
+  font-size: clamp(2rem, 3.1vw, 2.9rem);
+  font-weight: 500;
+  letter-spacing: -.05em;
+  line-height: 1;
+  color: var(--lime);
+}
+
+.highlightUnit {
+  color: #a9bba9;
+}
+
+.highlight dd {
+  margin: 0;
+  font-size: .9375rem;
+  line-height: 1.5;
+  color: #d3dbd2;
+}
+
+.highlight dd> :global(.mono) {
+  display: block;
+  margin-top: 8px;
+  color: #7f9086;
+  font-size: .6875rem;
+}
+
 /* Footer bar ------------------------------------------------------------- */
 
 .heroBottom {
@@ -169,6 +272,10 @@
 @media (prefers-reduced-motion: reduce) {
   .robotArt {
     transform: none !important;
+  }
+
+  .statusDot:after {
+    display: none;
   }
 }
 
@@ -211,6 +318,25 @@
      the scroll link has to hold the right edge on its own. */
   .scrollLink {
     margin-left: auto;
+  }
+
+  .highlights {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .highlight,
+  .highlight:first-child {
+    padding: 24px 22px 26px 0;
+    border-left: 0;
+  }
+
+  .highlight:nth-child(even) {
+    padding-left: 22px;
+    border-left: 1px solid #ffffff12;
+  }
+
+  .highlight:nth-child(n + 3) {
+    border-top: 1px solid #ffffff12;
   }
 }
 
@@ -270,6 +396,27 @@
   .scrollLink {
     font-size: .75rem;
     gap: 8px;
+  }
+
+  .highlight dd {
+    font-size: .875rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .highlights {
+    grid-template-columns: 1fr;
+  }
+
+  .highlight,
+  .highlight:first-child,
+  .highlight:nth-child(even) {
+    padding: 22px 0;
+    border-left: 0;
+  }
+
+  .highlight+.highlight {
+    border-top: 1px solid #ffffff12;
   }
 }
 

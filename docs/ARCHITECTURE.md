@@ -104,7 +104,8 @@ reorder.
 
 Current variants: `SectionLabel` (`plain`, `onDark`, `contained`),
 `SectionHeading` (`tight`, `contained`), `LinkList` (`aside`), `Button`
-(`lime`), and the flow diagram palettes (`rover`, `uav`).
+(`lime`), the flow diagram palettes (`rover`, `uav`, `depth`), and the project
+card layouts (`featured`, `mirrored`).
 
 ### Tokens
 

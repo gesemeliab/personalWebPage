@@ -2,27 +2,27 @@
 
 export const researchDirections = [
   {
-    id: "world-models",
+    id: "multimodal-perception",
     number: "01 —",
-    title: "World models",
+    title: "Perception that degrades gracefully",
     description:
-      "Learning predictive latent representations through self-supervision, rather than reconstructing every observation.",
-    tags: "JEPA / REPRESENTATION LEARNING",
+      "Fusing RGB, depth, sonar and audio so a robot keeps seeing when one sensor fails, by learning how much to trust each modality under the conditions it is in.",
+    tags: "SENSOR FUSION / DETECTION / RGB-D / SONAR",
   },
   {
-    id: "safe-autonomy",
+    id: "world-models",
     number: "02 —",
-    title: "Safe autonomy",
+    title: "World models for planning",
     description:
-      "Bringing model uncertainty into decision-making, with predictive control and safety constraints.",
-    tags: "MPC / CONTROL BARRIER FUNCTIONS",
+      "Learning predictive latent representations of the world that a planner can act on, rather than reconstructing every pixel.",
+    tags: "JEPA / DIFFUSION FOR PLANNING / SELF-SUPERVISION",
   },
   {
-    id: "embodied-learning",
+    id: "perception-driven-control",
     number: "03 —",
-    title: "Embodied learning",
+    title: "Perception-driven safe control",
     description:
-      "Connecting perception and action under partial observability, informed by experience and demonstration.",
-    tags: "ROBOT LEARNING / REINFORCEMENT LEARNING",
+      "Closing the loop from learned perception to action, with predictive control and safety filters that hold up under model uncertainty.",
+    tags: "MPC / CONTROL BARRIER FUNCTIONS / NAVIGATION",
   },
 ];

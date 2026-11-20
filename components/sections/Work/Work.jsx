@@ -4,7 +4,12 @@ import { projects } from "@/data/projects";
 import { ProjectCard } from "./ProjectCard";
 import styles from "./Work.module.css";
 
-/** Selected work: four project cards on a tinted panel. */
+/**
+ * Selected work on a tinted panel. Featured projects span the grid; every
+ * second one is mirrored so the page alternates diagram-left / diagram-right.
+ */
+const featuredIds = projects.filter(({ featured }) => featured).map(({ id }) => id);
+
 export function Work() {
   return (
     <section className={styles.workSection} id="work">
@@ -14,23 +19,27 @@ export function Work() {
         variant="contained"
         title={
           <>
-            Ideas meet
+            From sensors
             <br />
-            the real world.
+            to decisions.
           </>
         }
         description={
           <>
-            A selection of research and engineering
+            Perception systems I’ve built and shipped,
             <br />
-            across robots, sensors, and people.
+            on robots underwater, on the ground, in the air, and in the fab.
           </>
         }
       />
 
       <div className={styles.projectGrid}>
         {projects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
+          <ProjectCard
+            key={project.id}
+            project={project}
+            mirrored={featuredIds.indexOf(project.id) % 2 === 1}
+          />
         ))}
       </div>
     </section>

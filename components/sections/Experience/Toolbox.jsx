@@ -1,20 +1,25 @@
-import { Fragment } from "react";
-import { toolbox } from "@/data/experience";
+import { skills } from "@/data/experience";
 import styles from "./Toolbox.module.css";
 
-/** Slash-separated list of tools that closes the experience section. */
+/** Skills grouped by area, closing the experience section. */
 export function Toolbox() {
   return (
     <div className={styles.toolbox}>
-      <span className="mono">IN MY TOOLBOX</span>
-      <p>
-        {toolbox.map((tool, index) => (
-          <Fragment key={tool}>
-            {index > 0 ? <> <i>/</i> </> : null}
-            {tool}
-          </Fragment>
+      <h3 className="mono">IN MY TOOLBOX</h3>
+      <dl className={styles.skillGrid}>
+        {skills.map(({ id, group, items }) => (
+          <div className={styles.skillGroup} key={id}>
+            <dt>{group}</dt>
+            <dd>
+              <ul>
+                {items.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </dd>
+          </div>
         ))}
-      </p>
+      </dl>
     </div>
   );
 }

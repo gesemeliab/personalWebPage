@@ -2,20 +2,39 @@ import { Plus } from "lucide-react";
 import { cx } from "@/lib/classNames";
 import { ExternalLink } from "@/components/ui/ExternalLink/ExternalLink";
 import { FlowDiagram } from "./FlowDiagram";
+import { FusionDiagram } from "./FusionDiagram";
 import { NavigationDiagram } from "./NavigationDiagram";
 import styles from "./Work.module.css";
 
+/** The diagram a project asks for through its `visual` field. */
+function ProjectVisual({ project }) {
+  const { visual, visualLabel, visualNote, flow, fusion, results, theme } = project;
+
+  if (visual === "fusion") {
+    return <FusionDiagram label={visualLabel} fusion={fusion} results={results} note={visualNote} />;
+  }
+
+  if (visual === "navigation") {
+    return (
+      <div className={cx(styles.projectVisual, styles.navigationVisual)}>
+        <span className={cx(styles.visualLabel, "mono")}>{visualLabel}</span>
+        <NavigationDiagram />
+        <span className={styles.visualNote}>{visualNote}</span>
+      </div>
+    );
+  }
+
+  return <FlowDiagram label={visualLabel} flow={flow} theme={theme} />;
+}
+
 /**
- * One project: a diagram above, the write-up below, and an expander holding
- * the context, what was actually built, and what the evidence for it is.
+ * One project: a diagram, the write-up, and an expander holding the context,
+ * what was actually built, and what the evidence for it is. A `featured`
+ * project spans the grid with the diagram beside the text.
  */
-export function ProjectCard({ project }) {
+export function ProjectCard({ project, mirrored = false }) {
   const {
-    visual,
-    visualLabel,
-    visualNote,
-    flow,
-    theme,
+    featured,
     category,
     number,
     title,
@@ -30,16 +49,8 @@ export function ProjectCard({ project }) {
   } = project;
 
   return (
-    <article className={styles.project}>
-      {visual === "navigation" ? (
-        <div className={cx(styles.projectVisual, styles.navigationVisual)}>
-          <span className={cx(styles.visualLabel, "mono")}>{visualLabel}</span>
-          <NavigationDiagram />
-          <span className={styles.visualNote}>{visualNote}</span>
-        </div>
-      ) : (
-        <FlowDiagram label={visualLabel} flow={flow} theme={theme} />
-      )}
+    <article className={cx(styles.project, featured && styles.featured, mirrored && styles.mirrored)}>
+      <ProjectVisual project={project} />
 
       <div className={styles.projectBody}>
         <div className={cx(styles.projectMeta, "mono")}>

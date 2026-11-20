@@ -43,19 +43,22 @@ export function About() {
             Hands-on by design.
           </h2>
           <p className={styles.largeCopy}>
-            I work at the intersection of robot learning, perception, and control — turning ideas
-            into systems that interact with the physical world.
+            I work on robot perception for decision-making: turning multimodal sensor data into
+            representations of the world that robots can act on for navigation and planning.
           </p>
           <p>
             I’m a Ph.D. student in Electrical and Computer Engineering at Rochester Institute of
-            Technology and a Graduate Research Assistant in KAS Lab. My research focuses on safe
-            decision-making for embodied agents, self-supervised world models, and
-            uncertainty-aware control.
+            Technology and a Graduate Research Assistant in KAS Lab, advised by Prof. Mohammad
+            Javad Khojasteh. Right now I’m building perception that survives sensor degradation on
+            underwater robots, fusing camera and sonar so an AUV keeps seeing when the water goes
+            dark. I’m increasingly drawn to world models (JEPA), diffusion models for planning, and
+            MPC driven by learned perception.
           </p>
           <p>
-            Before RIT, I spent nearly five years at Intel Labs building multimodal learning
-            systems. My path has taken me from aerial robots and agricultural rovers to industrial
-            AI and underwater autonomy.
+            I’ve spent nine years putting perception on physical robots: quad-rotors, field rovers
+            and AUVs. Before RIT, I spent four and a half years at Intel Labs, where I architected
+            a real-time RGB-D and audio perception system that went from research prototype to
+            deployment in three semiconductor fabs worldwide.
           </p>
           <LinkList links={links} />
         </div>

@@ -12,16 +12,16 @@ export function Research() {
       <SectionHeading
         title={
           <>
-            How do robots learn
+            What does a robot need
             <br />
-            to act with confidence?
+            to see in order to act?
           </>
         }
         description={
           <>
-            Three connected directions.
+            Three connected directions, one goal:
             <br />
-            One goal: more capable, reliable autonomy.
+            perception that decisions can rely on.
           </>
         }
       />

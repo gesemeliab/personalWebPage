@@ -41,6 +41,11 @@
   line-height: 1.6;
 }
 
+.pubAuthors strong {
+  font-weight: 600;
+  color: #2c3a2a;
+}
+
 .pubVenue {
   font-size: .8125rem;
   color: #456131;
@@ -62,10 +67,18 @@
   background: var(--lime);
 }
 
+/* Status badge for unpublished work (e.g. UNDER REVIEW). It sits in the 55px
+   link column, so it wraps onto two short lines rather than widening it. */
 .draft {
-  font-size: .75rem;
-  padding: 7px 0;
-  color: #7b876e;
+  font-size: .625rem;
+  line-height: 1.4;
+  letter-spacing: .08em;
+  text-align: center;
+  padding: 5px 4px;
+  border: 1px solid #c9d8b8;
+  border-radius: 3px;
+  background: #eef5e3;
+  color: #4f6a35;
 }
 
 @media (max-width: 760px) {
@@ -83,6 +96,12 @@
   .pubLink {
     width: 34px;
     height: 34px;
+  }
+
+  .draft {
+    grid-column: 1 / -1;
+    justify-self: start;
+    padding: 4px 8px;
   }
 
   .publication h3 {

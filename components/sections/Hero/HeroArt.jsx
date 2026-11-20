@@ -23,7 +23,7 @@ export function HeroArt() {
     >
       <div className={cx(styles.artCoordinates, "mono")}>
         <span>FIG. 001</span>
-        <span>EMBODIED INTELLIGENCE</span>
+        <span>PERCEPTION → PLANNING</span>
       </div>
       <Image
         className={styles.robotArt}
@@ -36,7 +36,7 @@ export function HeroArt() {
         fetchPriority="high"
       />
       <div className={cx(styles.artFooter, "mono")}>
-        <span>PERCEIVE / LEARN / ACT</span>
+        <span>PERCEIVE / PREDICT / ACT</span>
         <span>CONCEPT STUDY</span>
       </div>
     </div>

@@ -44,7 +44,13 @@ A centred crop cuts off the top of the head.
 
 ## Project visuals
 
-The diagrams in the selected-work cards are conceptual method sketches drawn in
-SVG, not measured plots or equipment photographs. Publication status and
-research claims come from the author's CV; work that is simulated is described
-as simulated, and the manuscript in preparation is labelled as such.
+The flow and navigation diagrams in the selected-work cards are conceptual
+method sketches, not measured plots or equipment photographs. The one exception
+is the bar chart on the RGB–sonar fusion card, which plots the recall figures
+reported in the (under review) manuscript and prints every value; the card is
+captioned accordingly.
+
+Publication status and research claims come from the author's CV; work that is
+simulated is described as simulated, and work under review is labelled as such.
+The same holds for the figures in the hero's evidence strip (`highlights` in
+`data/site.js`), each of which names its source.

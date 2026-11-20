@@ -18,7 +18,8 @@ export function Experience() {
             to understanding.
           </h2>
           <p className={styles.careerIntro}>
-            Research grounded in years of bringing perception and learning onto physical systems.
+            Nine years of putting perception on physical robots and into deployment, from
+            quad-rotors to semiconductor fabs to AUVs.
           </p>
 
           <h3 className={cx(styles.educationTitle, "mono")}>EDUCATION</h3>

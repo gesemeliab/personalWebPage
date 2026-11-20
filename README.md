@@ -4,8 +4,9 @@ A single-page portfolio for robotics and embodied-intelligence research, built
 with Next.js and React in plain JavaScript. No TypeScript, no database, no
 backend: the build produces a folder of static files that any web host serves.
 
-**Research interests:** perception from sensors, self-supervised world models,
-planning under uncertainty, and safe decision-making for embodied agents.
+**Research focus:** robot perception for decision-making: multimodal sensor
+fusion (RGB, depth, sonar, audio) under degradation, world models for planning,
+and perception-driven safe control.
 
 ---
 
@@ -108,14 +109,15 @@ Most content is data, not markup:
 
 | File | Holds |
 | --- | --- |
-| `data/site.js` | Name, location, email, links, navigation, and the phrases the hero types |
+| `data/site.js` | Name, location, email, links, navigation, availability, the hero's typing phrases and evidence strip |
 | `data/research.js` | The three research directions |
-| `data/projects.js` | Selected-work cards, including the "Behind the project" text |
-| `data/publications.js` | The publication list |
-| `data/experience.js` | Education, career timeline and the toolbox list |
+| `data/projects.js` | Selected-work cards (`featured` spans the grid), including the "Behind the project" text |
+| `data/publications.js` | The publication list, and the name variants set in bold |
+| `data/experience.js` | Education, career timeline and the grouped skills |
 
 Adding a publication is one entry in `data/publications.js`. An entry without a
-`href` renders the `DRAFT` badge instead of a link.
+`href` renders its `status` badge (`DRAFT` by default, e.g. `UNDER REVIEW`)
+instead of a link.
 
 The rest:
 

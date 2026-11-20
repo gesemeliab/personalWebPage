@@ -2,7 +2,7 @@ import { ArrowUpRight, Mail } from "lucide-react";
 import { SectionLabel } from "@/components/layout/SectionLabel/SectionLabel";
 import { SiteFooter } from "@/components/layout/SiteFooter/SiteFooter";
 import { LinkList } from "@/components/ui/LinkList/LinkList";
-import { profiles, site } from "@/data/site";
+import { availability, profiles, site } from "@/data/site";
 import styles from "./Contact.module.css";
 
 const links = [
@@ -36,10 +36,7 @@ export function Contact() {
 
         <div className={styles.contactAside}>
           <Mail size={25} />
-          <p>
-            I’m interested in Ph.D. research internships in robot learning, world models, and
-            autonomous vehicles.
-          </p>
+          <p>{availability.long}</p>
           <LinkList links={links} variant="aside" />
         </div>
       </div>
