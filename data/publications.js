@@ -16,7 +16,7 @@ export const publications = [
     year: "2026",
     title: "Sound Advice: Vision-Language-Conditioned RGB-Sonar Fusion under Camera Degradation",
     authors: "G. Mejia, A. Acharya, K. Abaid, M. Chaickowsky, and M. J. Khojasteh",
-    venue: "IEEE/CVF CVPR 2027 · Under review",
+    venue: "Conference submission",
     status: "UNDER REVIEW",
   },
   {

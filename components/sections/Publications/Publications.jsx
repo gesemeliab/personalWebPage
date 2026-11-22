@@ -24,7 +24,7 @@ function Authors({ authors }) {
 export function Publications() {
   return (
     <section className={styles.publicationsSection} id="publications">
-      <SectionLabel index="04 / PUBLICATIONS" caption="SHARING THE WORK" />
+      <SectionLabel index="03 / PUBLICATIONS" caption="SHARING THE WORK" />
 
       <SectionHeading
         variant="tight"

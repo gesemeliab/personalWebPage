@@ -10,9 +10,11 @@ and React, written in JavaScript. There is no backend and no database: the page
 is content, not an application, so `next build` exports it as plain static
 files that any web host can serve.
 
-Most of the page is server-rendered at build time. Only three things are
+Most of the page is server-rendered at build time. Only nine things are
 interactive, and only those ship JavaScript to the browser: the mobile menu,
-the hero typing line, and the hero parallax.
+the hero typing line, the hero parallax, the sensor-fusion viewer, the
+navigation replay, and the diffusion, MARIE, strawberry-rover and quadrotor
+concept animations.
 
 ## Directory layout
 
@@ -27,10 +29,12 @@ the hero typing line, and the hero parallax.
 │   ├── sections/           one folder per page section
 │   └── ui/                 small reusable pieces
 ├── data/                   page content as plain JS modules
+│   └── figures/            generated figure data (see scripts/figures/)
 ├── hooks/                  reusable behaviour
 ├── lib/                    small helpers
 ├── styles/                 styles shared by more than one component
 ├── public/                 served from / and copied to the build untouched
+├── scripts/figures/        builds figure images and data from the research repos
 ├── next.config.mjs         static export configuration
 └── jsconfig.json           the "@/" path alias
 ```
@@ -104,7 +108,8 @@ reorder.
 
 Current variants: `SectionLabel` (`plain`, `onDark`, `contained`),
 `SectionHeading` (`tight`, `contained`), `LinkList` (`aside`), `Button`
-(`lime`), the flow diagram palettes (`rover`, `uav`, `depth`), and the project
+(`lime`), the flow diagram palettes (`rover`, `uav`; no project uses a flow diagram at
+present), and the project
 card layouts (`featured`, `mirrored`).
 
 ### Tokens
@@ -135,14 +140,30 @@ needs state, an effect or a DOM event:
 | `Navigation`          | menu state, and the scroll-spy highlight |
 | `TypingLine`          | types and erases the hero research line |
 | `HeroArt`             | pointer events driving the parallax     |
+| `FusionDiagram`       | camera-degradation controls and autoplay |
+| `TrialReplay`         | animates a planar simulation run        |
+| `DiffusionDiagram`    | animates the denoising concept          |
+| `MarieDiagram`        | animates the MARIE guidance concept     |
+| `RoverDiagram`        | animates the rover and its field map    |
+| `UavDiagram`          | animates the person-following controller |
+
+`PlaybackBar` (restart, play/pause, provenance note) is shared by every
+project visual; it renders inside the client components above.
 
 Icons come from `lucide-react`, as in the original project: outbound links
-carry an arrow, the menu toggle swaps between a burger and a cross, and the
-project expander's plus rotates into a cross when it opens.
+carry an arrow, and the menu toggle swaps between a burger and a cross.
 
 There is no in-page control for turning motion off. The only thing that
 suppresses it is the visitor's own `prefers-reduced-motion` setting, which each
 animated component honours in its own stylesheet.
+
+The six animated figures run only while on screen (`useInView`) and only
+when motion is welcome: until `usePrefersReducedMotion` reports `false` they
+render their still state (the clear camera frame; the complete run; the
+finished plans; the completed procedure; the finished field map; the quadrotor locked on
+the face). The replay
+and the three concept animations have a pause button,
+and the fusion viewer stops autoplaying once it is touched.
 
 `useHeroParallax` writes the pointer position to the `--rx` / `--ry` custom
 properties and lets CSS do the animating — which is also what neutralises it

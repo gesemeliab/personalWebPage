@@ -1,0 +1,1 @@
+{"source": "hauv_waypoint_adaptive_amax4_seed319545542777820282722617200643996834589_20260902-191928.json", "simulator": "Gazebo", "courses": 3, "collisions": 0, "marginViolations": 0, "closestApproach": 1.41, "contactDistance": 0.9, "obstacles": [10, 7, 8], "obstacleAMax": 4.0}

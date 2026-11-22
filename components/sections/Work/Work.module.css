@@ -12,11 +12,12 @@
   margin-left: auto;
   margin-right: auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 42px 36px;
 }
 
 .project {
+  min-width: 0;
   background: #f8faf5;
   border-radius: 5px;
   overflow: hidden;
@@ -39,22 +40,6 @@
   font-size: .75rem;
   letter-spacing: .04em;
   z-index: 1;
-}
-
-.navigationVisual {
-  background: #132e30;
-  padding: 43px 15px 24px;
-}
-
-.navigationVisual svg {
-  width: 100%;
-  height: 100%;
-}
-
-.navigationVisual svg text {
-  fill: #a8c8c6;
-  font-family: var(--mono);
-  font-size: 10px;
 }
 
 .visualNote {
@@ -153,205 +138,1637 @@
   color: #35556b;
 }
 
-.flowVisual.depth {
-  background: #e6e1d6;
-}
+/* Dark "instrument" visuals: sonar fusion, trial replay, diffusion, MARIE - */
 
-.depth .visualLabel,
-.depth .flowInput,
-.depth .flowFoot {
-  color: #7a6a4c;
-}
-
-.depth .flowNodes>span {
-  background: #f7f4ed;
-  border-color: #d3c7ae;
-  color: #5b4c31;
-}
-
-.depth .flowConnector {
-  background: #a8966f;
-}
-
-.depth .flowOutput {
-  background: #ddd0b4;
-  border-color: #a8966f;
-  color: #4d3f24;
-}
-
-/* Fusion visual: sensor pipeline beside a chart of reported results ------ */
-
-.fusionVisual {
+.fusionVisual,
+.replayVisual,
+.diffusionVisual,
+.marieVisual,
+.roverVisual,
+.uavVisual {
   background:
     radial-gradient(120% 90% at 0% 100%, #1d4a4c 0%, transparent 60%),
     #0f2628;
-  display: flex;
-  align-items: center;
-  padding: 62px 30px 46px;
+  color: #cfe3df;
 }
 
-.fusionVisual .visualLabel {
+.fusionVisual .visualLabel,
+.replayVisual .visualLabel,
+.diffusionVisual .visualLabel,
+.marieVisual .visualLabel,
+.roverVisual .visualLabel,
+.uavVisual .visualLabel {
   color: #7fa5a0;
 }
 
-.fusionBody {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-  gap: 30px;
-  align-items: center;
-  width: 100%;
+.fusionVisual .visualNote,
+.replayVisual .visualNote,
+.diffusionVisual .visualNote,
+.marieVisual .visualNote,
+.roverVisual .visualNote,
+.uavVisual .visualNote {
+  position: static;
+  align-self: flex-end;
+  margin-top: 2px;
+  color: #7f9f9b;
+  text-align: right;
 }
 
-.fusionPipeline {
+/* One anatomy for every dark panel: label and badge on top, a body that
+   takes the free height and centres its content, then the playback bar.
+   Featured cards share one desktop height (see .featured .projectVisual). */
+.projectVisual.fusionVisual,
+.projectVisual.replayVisual,
+.projectVisual.diffusionVisual,
+.projectVisual.marieVisual,
+.projectVisual.roverVisual,
+.projectVisual.uavVisual {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 14px;
+  height: auto;
+  padding: 56px 24px 16px;
 }
 
-.fusionInputs {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-}
-
-.fusionInput {
+.visualBody {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  padding: 11px 8px;
-  text-align: center;
-  background: #15373a;
-  border: 1px solid #3d6266;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* Badge for panels built from real data, beside the dashed concept badge. */
+.wipBadge.dataBadge {
+  border-style: solid;
+  border-color: #3d6266;
+  color: #a8c8c4;
+}
+
+/* Sonar fusion: camera vs sonar, controls, results */
+
+
+.sensorStage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: end;
+}
+
+.cameraPane,
+.sonarPane {
+  margin: 0;
+}
+
+.cameraFrame {
+  position: relative;
+  aspect-ratio: 968 / 608;
   border-radius: 3px;
+  overflow: hidden;
+  background: #071416;
+  box-shadow: 0 0 0 1px #2c5256;
 }
 
-.fusionInput strong {
-  color: #b8d3cf;
-  font-weight: 500;
+.cameraImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity .55s ease;
 }
 
-.fusionInput small {
-  font-size: .6875rem;
-  color: #7fa09c;
+.cameraImage.shown {
+  opacity: 1;
 }
 
-/* The camera is the sensor that fails, so it is drawn fading out. */
-.fusionInput.rgb {
-  border-style: dashed;
-  background: linear-gradient(180deg, #15373a, #0f2628);
+.sonarImage {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
-.fusionInput.rgb strong {
-  opacity: .6;
+.sonarFrame {
+  position: relative;
 }
 
-.fusionInput.sonar {
-  border-color: #7ea84a;
+/* Detection overlays, positioned in percent of their image. */
+.detBox {
+  position: absolute;
+  border: 2px solid;
+  border-radius: 2px;
+  pointer-events: none;
+  animation: detIn .35s ease both;
 }
 
-.fusionInput.sonar strong {
+.detBox em {
+  position: absolute;
+  left: -2px;
+  bottom: 100%;
+  padding: 1px 4px;
+  font-size: .5625rem;
+  font-style: normal;
+  letter-spacing: .04em;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.detCam,
+.detMatch {
+  border-color: var(--lime);
+  box-shadow: 0 0 0 1px #0f262899;
+}
+
+.detCam em,
+.detMatch em {
+  background: var(--lime);
+  color: var(--ink);
+}
+
+.detSonar {
+  border-color: #f08a4b;
+  box-shadow: 0 0 0 1px #0f262899;
+}
+
+.detSonar em {
+  background: #f08a4b;
+  color: #1a0d05;
+}
+
+.zoneTag {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 2px 6px;
+  border: 1px solid #f08a4b;
+  border-radius: 2px;
+  background: #1a0d05cc;
+  color: #ffc38f;
+  font-size: .5625rem;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: detIn .45s ease both;
+}
+
+@keyframes detIn {
+  from {
+    opacity: 0;
+  }
+}
+
+/* What the visitor is looking at: counts plus one plain sentence. */
+.fusionStory {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 22px;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid #2c5256;
+  border-bottom: 1px solid #2c5256;
+}
+
+.fusionStory dl {
+  display: flex;
+  gap: 18px;
+  margin: 0;
+}
+
+.fusionStory dt {
+  color: #8fb0ac;
+  font-size: .5625rem;
+  letter-spacing: .04em;
+}
+
+.fusionStory dd {
+  margin: 4px 0 0;
+  color: #cfe3df;
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.fusionStory dd.good {
   color: var(--lime);
 }
 
-.fusionConnector {
-  width: 1px;
-  height: 16px;
-  background: #4e7a7c;
+.fusionStory dd.sonar {
+  color: #f08a4b;
 }
 
-.fusionGate {
-  border: 1px solid #c4f36b66;
-  color: #dcefc0;
-  padding: 9px 14px;
-  border-radius: 999px;
-  text-align: center;
+.storyText {
+  margin: 0;
+  padding-left: 12px;
+  border-left: 2px solid #3d6266;
+  color: #cfe3df;
+  font-size: .8125rem;
+  line-height: 1.45;
+}
+
+.storyText.camera {
+  border-color: var(--lime);
+}
+
+.storyText.recovered {
+  border-color: #f08a4b;
+}
+
+.detLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 16px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  color: #a8c8c4;
+  font-size: .625rem;
+}
+
+.detLegend li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.detLegend i {
+  flex: none;
+  display: inline-block;
+  width: 12px;
+  height: 9px;
+  border: 2px solid var(--lime);
+  border-radius: 1px;
+}
+
+.detLegend .lgSonar {
+  border-color: #f08a4b;
+}
+
+.detLegend .lgZone {
+  width: 14px;
+  height: 10px;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fde68a 0%, #f59e0b 40%, #b4235a66 75%, transparent 100%);
+}
+.cameraPane figcaption,
+.sonarPane figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 9px;
+  color: #a8c8c4;
   font-size: .6875rem;
-  letter-spacing: .03em;
 }
 
-.fusionOutput {
+.paneState {
+  color: #7f9f9b;
+  text-align: right;
+}
+
+.sonarPane .paneState {
+  color: var(--lime);
+}
+
+.sensorControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  max-width: 100%;
+  padding: 3px;
+  border: 1px solid #2c5256;
+  border-radius: 999px;
+  background: #0b1f21;
+}
+
+.segmented button {
+  border: 0;
+  background: transparent;
+  color: #a8c8c4;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: .6875rem;
+  transition: background .2s, color .2s;
+}
+
+.segmented button:hover {
+  color: #e6f2ef;
+}
+
+.segmented button[aria-pressed="true"] {
   background: var(--lime);
   color: var(--ink);
-  padding: 9px 20px;
-  border-radius: 3px;
-  font-weight: 600;
 }
 
-.fusionResults {
-  margin: 0;
-  padding-left: 28px;
-  border-left: 1px solid #2c5256;
+.segmented button:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 2px;
 }
 
-.fusionResults figcaption {
-  color: #8fb0ac;
-  margin-bottom: 18px;
-}
+/* Trial replay */
 
-.fusionResults dl {
-  display: grid;
-  gap: 16px;
-  margin: 0;
-}
 
-.resultRow dt {
+.replayHud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
   color: #a8c8c4;
-  margin-bottom: 7px;
+  font-size: .6875rem;
+  font-variant-numeric: tabular-nums;
 }
 
-.resultRow dd {
+.replayHud .replayMode {
+  margin-left: auto;
+}
+
+.replayMode {
+  padding: 3px 8px;
+  border: 1px solid #3d6266;
+  border-radius: 999px;
+  color: #a8c8c4;
+  transition: background .2s, color .2s, border-color .2s;
+}
+
+.replayMode.on {
+  border-color: var(--lime);
+  background: #c4f36b1c;
+  color: var(--lime);
+}
+
+/* Fills whatever height the shared card height leaves, keeping its aspect. */
+.replaySvg {
+  flex: 1 1 0;
+  width: 100%;
+  min-height: 240px;
+}
+
+.obstacleTrail {
+  fill: none;
+  stroke: #e08a5b;
+  stroke-opacity: .28;
+  stroke-width: .05;
+}
+
+.robotPlan {
+  fill: none;
+  stroke: #6f9592;
+  stroke-opacity: .35;
+  stroke-width: .06;
+  stroke-dasharray: .2 .2;
+}
+
+.robotTrail {
+  fill: none;
+  stroke: #8ad1c8;
+  stroke-width: .13;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.robotTrail.on {
+  stroke: var(--lime);
+}
+
+.obstacle {
+  fill: #e08a5b;
+  fill-opacity: .55;
+  stroke: #f2a679;
+  stroke-width: .05;
+}
+
+.robot {
+  fill: var(--lime);
+  stroke: #0f2628;
+  stroke-width: .06;
+}
+
+.startDot {
+  fill: none;
+  stroke: #cfe3df;
+  stroke-width: .06;
+}
+
+.waypoint path {
+  stroke: #cfe3df;
+  stroke-width: .07;
+}
+
+.waypoint text {
+  fill: #a8c8c4;
+  font-family: var(--mono);
+  font-size: .5px;
+}
+
+.lgWaypoint {
+  color: #cfe3df;
+  font-style: normal;
+  font-size: .8rem;
+  line-height: 1;
+}
+
+.replayFoot {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 0;
 }
 
-.resultTrack {
+.replayToggle {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #3d6266;
+  border-radius: 50%;
+  background: transparent;
+  color: #cfe3df;
+}
+
+.replayToggle:hover:not(:disabled) {
+  border-color: var(--lime);
+  color: var(--lime);
+}
+
+.replayToggle:disabled {
+  opacity: .4;
+}
+
+.spark {
   flex: 1;
-  height: 10px;
+  min-width: 0;
+}
+
+.spark> :global(.mono) {
+  display: block;
+  margin-bottom: 4px;
+  color: #8fb0ac;
+  font-size: .625rem;
+}
+
+.spark svg {
+  display: block;
+  width: 100%;
+  height: 26px;
+}
+
+.sparkBand {
+  fill: var(--lime);
+  fill-opacity: .1;
+}
+
+.sparkLine {
+  fill: none;
+  stroke: #8ad1c8;
+  stroke-width: 1.2;
+}
+
+.sparkHead {
+  stroke: var(--lime);
+  stroke-width: 1.5;
+}
+
+.replayLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  color: #a8c8c4;
+  font-size: .625rem;
+}
+
+.replayLegend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.replayLegend i {
+  display: inline-block;
+}
+
+.lgRobot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--lime);
+}
+
+.lgActive {
+  width: 16px;
+  height: 3px;
+  background: var(--lime);
+  box-shadow: -18px 0 0 #8ad1c8;
+  margin-left: 18px;
+}
+
+.lgObstacle {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #e08a5b;
+  opacity: .8;
+}
+
+/* Diffusion: a concept animation, not data */
+
+
+.wipBadge {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  padding: 3px 8px;
+  border: 1px dashed #e0b25b;
+  border-radius: 999px;
+  color: #e9c27a;
+  font-size: .5625rem;
+  letter-spacing: .05em;
+}
+
+.dfReadout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #a8c8c4;
+  font-size: .625rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.dfTrack {
+  flex: 1;
+  height: 3px;
   background: #1b4044;
   border-radius: 2px;
   overflow: hidden;
 }
 
-.resultBar {
+.dfTrack span {
   display: block;
   height: 100%;
-  min-width: 3px;
-  background: #6f9592;
-  transform-origin: left;
-  animation: growBar 1.1s cubic-bezier(.2, .7, .2, 1) .2s both;
-}
-
-.highlight .resultBar {
   background: var(--lime);
 }
 
-.resultValue {
-  min-width: 5ch;
-  text-align: right;
+.dfSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.dfSafe {
+  fill: none;
+  stroke: #e08a5b;
+  stroke-opacity: .6;
+  stroke-width: .9;
+  stroke-dasharray: 3 3;
+}
+
+.dfObstacle {
+  fill: #e08a5b;
+  fill-opacity: .75;
+}
+
+.dfObsText {
+  fill: #2a1206;
+  font-family: var(--mono);
+  font-size: 7px;
+  font-weight: 600;
+}
+
+.dfArrows path {
+  stroke: #e9a27a;
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  opacity: .2;
+  transition: opacity .3s;
+}
+
+.dfArrows.on path {
+  opacity: .85;
+}
+
+.dfSample {
+  fill: none;
+  stroke: #8ad1c8;
+  stroke-opacity: .7;
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  transition: stroke .4s, stroke-opacity .4s;
+}
+
+.dfSample.settled {
+  stroke: var(--lime);
+  stroke-opacity: .95;
+  stroke-width: 1.7;
+}
+
+.dfGhost {
+  fill: none;
+  stroke: #9fb8b5;
+  stroke-width: 1.1;
+  stroke-dasharray: 3 3;
+  transition: opacity .4s;
+}
+
+.dfStart {
+  fill: #cfe3df;
+}
+
+.dfLeader {
+  stroke: #e08a5b;
+  stroke-opacity: .5;
+  stroke-width: .8;
+  stroke-dasharray: 2 2;
+}
+
+.dfGoal {
+  stroke: #cfe3df;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.svgLabel {
+  fill: #a8c8c4;
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: .04em;
+}
+
+.dfStages {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: stage;
+}
+
+.dfStages li {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 9px;
+  border: 1px solid #2c5256;
+  border-radius: 3px;
+  color: #8fb0ac;
+  font-size: .5625rem;
+  transition: border-color .25s, color .25s, background .25s;
+}
+
+.dfStages strong {
+  color: #cfe3df;
+  font-size: .625rem;
+  font-weight: 500;
+  letter-spacing: .03em;
+}
+
+.dfStages li.on {
+  border-color: var(--lime);
+  background: #c4f36b14;
   color: #cfe3df;
 }
 
-.highlight .resultValue {
+.dfStages li.on strong {
   color: var(--lime);
-  font-size: 1.3rem;
-  font-weight: 600;
-  letter-spacing: -.02em;
 }
 
-.resultFootnote {
-  margin-top: 20px;
-  padding-top: 14px;
-  border-top: 1px solid #2c5256;
-  color: #8fb0ac;
+.dfFoot {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
-@keyframes growBar {
-  from {
-    transform: scaleX(0);
+.dfLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  color: #a8c8c4;
+  font-size: .625rem;
+}
+
+.dfLegend li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.dfLegend i {
+  display: inline-block;
+  width: 18px;
+  border-top: 2px solid var(--lime);
+}
+
+.dfLegend .lgUnguided {
+  border-top: 2px dashed #9fb8b5;
+}
+
+
+/* MARIE: a concept animation of the bench, not data */
+
+
+.marieModes .segmented {
+  display: flex;
+  width: 100%;
+}
+
+.marieModes .segmented button {
+  flex: 1;
+}
+
+.marieStage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.benchSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.bRoom {
+  fill: none;
+  stroke: #3d6266;
+  stroke-width: .8;
+}
+
+.bFloor {
+  fill: #173d42;
+}
+
+.bGrid {
+  stroke: #2c5a5f;
+  stroke-width: .6;
+}
+
+.bRig {
+  stroke: #5c8a86;
+  stroke-width: 1.4;
+}
+
+.bCam {
+  fill: #cfe3df;
+}
+
+.bFov {
+  fill: #8ad1c8;
+  fill-opacity: .05;
+  stroke: #8ad1c8;
+  stroke-opacity: .2;
+  stroke-width: .6;
+  stroke-dasharray: 3 3;
+  transition: fill-opacity .3s, stroke-opacity .3s;
+}
+
+.bFov.on {
+  fill: var(--lime);
+  fill-opacity: .09;
+  stroke: var(--lime);
+  stroke-opacity: .55;
+}
+
+.bLabel {
+  fill: #7f9f9b;
+  font-family: var(--mono);
+  font-size: 6.5px;
+  letter-spacing: .05em;
+}
+
+.bSpeaker,
+.bMic {
+  fill: #1b4044;
+  stroke: #5c8a86;
+  stroke-width: .8;
+  transition: fill .2s, stroke .2s;
+}
+
+.bSpeaker.on,
+.bMic.on {
+  fill: var(--lime);
+  stroke: var(--lime);
+}
+
+.bWave {
+  fill: none;
+  stroke: var(--lime);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+
+.bBenchTop {
+  fill: #2f5c60;
+}
+
+.bBench {
+  fill: #23484c;
+}
+
+.bBox {
+  fill: #9fb8b5;
+}
+
+.bMonitor {
+  fill: #0b1f21;
+  stroke: #5c8a86;
+  stroke-width: .8;
+}
+
+.bScreen {
+  fill: #133236;
+}
+
+.bScreenLine {
+  fill: #4e7a7c;
+}
+
+.bRec {
+  fill: #f0604b;
+  animation: recBlink 1.2s steps(2) infinite;
+}
+
+@keyframes recBlink {
+  50% {
+    opacity: .2;
   }
+}
+
+.bTool {
+  fill: #7fa5a0;
+}
+
+.bModule {
+  fill: #5c8fb8;
+}
+
+.bPerson {
+  fill: #071416;
+  stroke: #3d6266;
+  stroke-width: .8;
+}
+
+.bSeen {
+  fill: #7f9f9b;
+  font-family: var(--mono);
+  font-size: 6.5px;
+  letter-spacing: .04em;
+}
+
+.bSeen.on {
+  fill: var(--lime);
+}
+
+.marieSpec {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.marieSpecTitle {
+  color: #8fb0ac;
+  font-size: .5625rem;
+  letter-spacing: .05em;
+}
+
+.marieSpec ol {
+  display: grid;
+  gap: 5px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.marieSpec li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border: 1px solid #2c5256;
+  border-radius: 3px;
+  color: #8fb0ac;
+  font-size: .75rem;
+  transition: border-color .25s, color .25s, background .25s;
+}
+
+.marieSpec li span {
+  flex: 1;
+  min-width: 0;
+}
+
+.marieSpec li em {
+  color: #a8c8c4;
+  font-size: .5625rem;
+  font-style: normal;
+}
+
+.marieSpec li i {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  border: 1px solid #3d6266;
+  border-radius: 50%;
+  font-family: var(--mono);
+  font-size: .5625rem;
+  font-style: normal;
+}
+
+.marieSpec li.now {
+  border-color: #8ad1c8;
+  color: #e6f2ef;
+}
+
+.marieSpec li.done,
+.marieSpec li.logged {
+  color: #cfe3df;
+}
+
+.marieSpec li.done i,
+.marieSpec li.logged i {
+  border-color: var(--lime);
+  background: var(--lime);
+  color: var(--ink);
+}
+
+.marieSpec li.flag {
+  border-color: #f08a4b;
+  background: #f08a4b1a;
+  color: #ffd2b0;
+}
+
+.marieSpec li.flag i {
+  border-color: #f08a4b;
+  background: #f08a4b;
+  color: #1a0d05;
+  font-weight: 700;
+}
+
+.marieDialog {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 78px;
+  padding: 10px 12px;
+  border: 1px solid #2c5256;
+  border-radius: 4px;
+  background: #0b1f21;
+}
+
+.marieDialog p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 0;
+  color: #cfe3df;
+  font-size: .8125rem;
+  line-height: 1.4;
+  animation: detIn .3s ease both;
+}
+
+.marieDialog b {
+  flex: none;
+  width: 44px;
+  font-size: .5625rem;
+  font-weight: 500;
+  letter-spacing: .05em;
+}
+
+.marieDialog .marie b {
+  color: var(--lime);
+}
+
+.marieDialog .tech b {
+  color: #e9c27a;
+}
+
+.marieDialog span {
+  flex: 1;
+  min-width: 0;
+}
+
+.marieDialog em {
+  padding: 1px 6px;
+  border: 1px solid #3d6266;
+  border-radius: 999px;
+  color: #a8c8c4;
+  font-size: .5625rem;
+  font-style: normal;
+}
+
+.marieDialog .idle {
+  color: #7f9f9b;
+}
+
+.marieCaption {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #a8c8c4;
+  font-size: .625rem;
+}
+
+.marieCaption.on {
+  color: var(--lime);
+}
+
+/* Strawberry rover: a concept animation, not data */
+
+
+/* Two columns, each a stack of one tall and one wide piece, so neither column
+   leaves a gap beside the other. Phones: one column in story order. */
+.rvTop {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.rvCol {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.rvPanel {
+  margin: 0;
+}
+
+.rvPanel figcaption {
+  margin-bottom: 5px;
+  color: #8fb0ac;
+  font-size: .5625rem;
+  letter-spacing: .05em;
+}
+
+.rvSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 3px;
+  background: #0b1f21;
+}
+
+.rvFurrow {
+  fill: #2e241c;
+}
+
+.rvRidge {
+  fill: #3a2c22;
+}
+
+.rvMulch {
+  fill: none;
+  stroke: #15181a;
+  stroke-width: 5;
+}
+
+.rvPlant {
+  fill: #3f7a45;
+}
+
+.rvPlant ellipse:nth-child(2) {
+  fill: #4d8e4f;
+}
+
+.rvStem {
+  stroke: #4d8e4f;
+  stroke-width: .8;
+}
+
+.rvFov {
+  fill: var(--lime);
+  fill-opacity: .07;
+  stroke: var(--lime);
+  stroke-opacity: .4;
+  stroke-width: .6;
+  stroke-dasharray: 2 2;
+}
+
+.rvBox {
+  fill: none;
+  stroke: #cfe3df;
+  stroke-width: .8;
+}
+
+.rvFocus {
+  fill: none;
+  stroke: var(--lime);
+  stroke-width: 1.6;
+}
+
+.rvGround {
+  fill: #4a3a2c;
+}
+
+.rvBody {
+  fill: #cfe3df;
+}
+
+.rvJetson {
+  fill: #6fa36a;
+}
+
+.rvMast {
+  stroke: #9fb8b5;
+  stroke-width: 1.4;
+}
+
+.rvCam {
+  fill: #1d2427;
+  stroke: #9fb8b5;
+  stroke-width: .6;
+}
+
+.rvLens {
+  fill: var(--lime);
+}
+
+.rvWheel {
+  fill: #15181a;
+  stroke: #5c8a86;
+  stroke-width: 1.2;
+}
+
+/* The inspector: one detection through the pipeline */
+.rvInspect {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rvCrop {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px #2c5256;
+  animation: detIn .35s ease both;
+}
+
+.rvCropBox {
+  fill: none;
+  stroke: var(--lime);
+  stroke-width: 2;
+}
+
+.rvCropTag {
+  fill: var(--lime);
+  font-family: var(--mono);
+  font-size: 8px;
+}
+
+.rvCropText {
+  fill: #8fb0ac;
+  font-family: var(--mono);
+  font-size: 7px;
+}
+
+.rvCropText.on {
+  fill: var(--lime);
+  font-weight: 700;
+}
+
+.rvThresh {
+  stroke: #e6f2ef;
+  stroke-opacity: .5;
+  stroke-width: .8;
+  stroke-dasharray: 2 2;
+}
+
+.rvSteps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rvSteps li {
+  padding: 4px 5px;
+  border: 1px solid #2c5256;
+  border-radius: 3px;
+  color: #7f9f9b;
+  font-size: .5625rem;
+  line-height: 1.25;
+  transition: border-color .25s, color .25s, background .25s;
+}
+
+.rvSteps li.done {
+  color: #cfe3df;
+}
+
+.rvSteps li.on {
+  border-color: var(--lime);
+  background: #c4f36b14;
+  color: var(--lime);
+}
+
+.rvCaption {
+  margin: 0;
+  min-height: 2.9em;
+  color: #cfe3df;
+  font-size: .75rem;
+  line-height: 1.45;
+}
+
+/* The row map */
+.rvMapRidge {
+  fill: #2a2520;
+  stroke: var(--lime);
+  stroke-opacity: .45;
+  stroke-width: .6;
+}
+
+.rvPath {
+  stroke: var(--lime);
+  stroke-width: 1;
+  stroke-dasharray: 3 2;
+}
+
+.rvMapScan {
+  fill: var(--lime);
+  fill-opacity: .1;
+}
+
+.rvMapped {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rvPop .5s ease both;
+}
+
+@keyframes rvPop {
+  from {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+
+.rvFocusTag {
+  fill: var(--lime);
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.rvZone line {
+  stroke: #e9c27a;
+  stroke-width: .6;
+  stroke-dasharray: 2 2;
+}
+
+.rvMapRover {
+  fill: var(--lime);
+}
+
+.rvZone rect {
+  fill: none;
+  stroke: #e9c27a;
+  stroke-width: .9;
+  stroke-dasharray: 3 2;
+}
+
+.rvZone {
+  opacity: 0;
+  transition: opacity .5s;
+}
+
+.rvZone.on {
+  opacity: 1;
+}
+
+.rvZoneText {
+  fill: #e9c27a;
+  font-family: var(--mono);
+  font-size: 6.5px;
+  letter-spacing: .04em;
+}
+
+.rvZoneSub {
+  fill: #c9b48a;
+  font-family: var(--mono);
+  font-size: 5.5px;
+}
+
+.rvFoot {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.rvLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  color: #a8c8c4;
+  font-size: .625rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.rvLegend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rvLegend i {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.roverVisual .rvLegend {
+  flex-direction: column;
+}
+
+/* Bottom bar of the rover and UAV animations: restart and play/pause on the
+   left, the provenance note on the right. */
+.animBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin-top: auto;
+}
+
+.animControls {
+  display: flex;
+  gap: 8px;
+}
+
+.animBar .visualNote {
+  align-self: center;
+  margin-top: 0;
+}
+
+/* Person-following quadrotor: a concept animation of the paper's controller */
+
+.uvTop {
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+/* The command readout grows to the height of the camera column. */
+.uvTop .uvCommand {
+  flex: 1;
+}
+
+.uvTop .uvReadout {
+  flex: 1;
+  align-content: space-evenly;
+}
+
+.uvSky {
+  fill: #16393b;
+}
+
+.uvGrass {
+  fill: #1f3b26;
+}
+
+.uvTree {
+  fill: #2a5a37;
+}
+
+.uvTree rect {
+  fill: #3a2f25;
+}
+
+.uvBush {
+  fill: #2f6a3c;
+}
+
+.uvPerson {
+  fill: #d9cbb5;
+}
+
+.uvLegs {
+  fill: none;
+  stroke: #3b4b63;
+  stroke-linecap: round;
+}
+
+.uvHead {
+  fill: #c89a74;
+}
+
+.uvGrid line {
+  stroke: #e6f2ef;
+  stroke-opacity: .18;
+  stroke-width: 1.5;
+  stroke-dasharray: 6 6;
+}
+
+.uvCellSlow {
+  fill: var(--lime);
+  fill-opacity: .14;
+}
+
+.uvCellFast {
+  fill: #f2a54a;
+  fill-opacity: .2;
+}
+
+.uvCellOk {
+  fill: var(--lime);
+  fill-opacity: .3;
+}
+
+.uvCross {
+  stroke: #e6f2ef;
+  stroke-width: 2.5;
+}
+
+.uvBody {
+  fill: none;
+  stroke: #6fc3df;
+  stroke-width: 4;
+}
+
+.uvFace {
+  fill: none;
+  stroke: var(--lime);
+  stroke-width: 4;
+}
+
+.uvDecoy {
+  fill: none;
+  stroke: #6fc3df;
+  stroke-width: 3;
+  stroke-dasharray: 10 7;
+}
+
+.uvError {
+  stroke: var(--lime);
+  stroke-width: 2.5;
+  stroke-dasharray: 8 6;
+}
+
+.uvCentroid {
+  fill: var(--lime);
+  stroke: #0b1f21;
+  stroke-width: 2;
+}
+
+.uvHud,
+.uvTagBody,
+.uvTagWarn {
+  font-family: var(--mono);
+  font-size: 19px;
+  letter-spacing: .04em;
+}
+
+.uvHud {
+  fill: #e6f2ef;
+}
+
+.uvTagBody {
+  fill: #6fc3df;
+}
+
+.uvTagWarn {
+  fill: #f2a54a;
+}
+
+.uvCommand {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.uvReadout {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid #2c5256;
+  border-radius: 3px;
+  background: #0b1f21;
+  font-size: 1.125rem;
+}
+
+.uvReadout dt {
+  margin-bottom: 2px;
+  color: #7f9f9b;
+  font-size: .625rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.uvReadout dd {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  color: #cfe3df;
+  white-space: nowrap;
+}
+
+.uvReadout dd.on {
+  color: var(--lime);
+}
+
+.uvReadout small {
+  color: #7f9f9b;
+  font-size: .6875rem;
+}
+
+.uvCall {
+  overflow-wrap: anywhere;
+  color: #a8c8c4;
+  font-family: var(--mono);
+  font-size: .625rem;
+}
+
+.uvFov {
+  fill: var(--lime);
+  fill-opacity: .07;
+  stroke: var(--lime);
+  stroke-opacity: .3;
+  stroke-width: .5;
+}
+
+.uvTrailDrone,
+.uvTrailPerson {
+  fill: none;
+  stroke-width: .8;
+  stroke-dasharray: 2 2;
+}
+
+.uvTrailDrone {
+  stroke: var(--lime);
+  stroke-opacity: .6;
+}
+
+.uvTrailPerson {
+  stroke: #d9cbb5;
+  stroke-opacity: .5;
+}
+
+.uvLink {
+  stroke: #e6f2ef;
+  stroke-opacity: .35;
+  stroke-width: .6;
+}
+
+.uvMapText {
+  fill: #a8c8c4;
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.uvMapPerson {
+  fill: #d9cbb5;
+}
+
+.uvQuad {
+  fill: #0b1f21;
+  stroke: var(--lime);
+  stroke-width: 1.2;
+}
+
+.rvLegend i.lgBody,
+.rvLegend i.lgFace {
+  border-radius: 1px;
+  background: transparent;
+}
+
+.rvLegend i.lgBody {
+  border: 1.5px solid #6fc3df;
+}
+
+.rvLegend i.lgFace {
+  border: 1.5px solid var(--lime);
+}
+
+.rvLegend i.lgSlow {
+  border-radius: 1px;
+  background: #c4f36b40;
+}
+
+.rvLegend i.lgFast {
+  border-radius: 1px;
+  background: #f2a54a55;
 }
 
 /* Featured cards: full width, diagram beside the text -------------------- */
@@ -372,7 +1789,7 @@
 
 .featured .projectVisual {
   height: auto;
-  min-height: 390px;
+  min-height: 600px;
 }
 
 .featured .flowVisual {
@@ -387,15 +1804,44 @@
 }
 
 .featured .projectBody>p {
-  font-size: 1.0625rem;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 .project.featured h3 {
-  font-size: 2.15rem;
+  font-size: 1.75rem;
+  letter-spacing: -.02em;
 }
 
-.featured details {
+.featured .projectFoot {
   margin-top: auto;
+}
+
+/* Key numbers on featured cards */
+
+.keyStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin: 4px 0 28px;
+  padding: 20px 0 0;
+  border-top: 1px solid #dce4d6;
+}
+
+.keyStats dt {
+  font-family: var(--display);
+  font-size: 1.75rem;
+  font-weight: 500;
+  letter-spacing: -.04em;
+  line-height: 1.1;
+  color: #2f4a1c;
+}
+
+.keyStats dd {
+  margin: 6px 0 0;
+  font-size: .8125rem;
+  line-height: 1.45;
+  color: #617063;
 }
 
 /* Card body -------------------------------------------------------------- */
@@ -442,62 +1888,32 @@
   color: #5c7051;
 }
 
-/* Behind-the-project expander -------------------------------------------- */
+/* Closing line: context and venue, and the paper ----------------------- */
 
-.project details {
+.projectFoot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 20px;
+  min-height: 58px;
+  padding: 12px 0;
   border-top: 1px solid #dce4d6;
 }
 
-.project summary {
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  min-height: 58px;
-  font-size: .8125rem;
-  font-weight: 500;
-}
-
-.project summary::-webkit-details-marker {
-  display: none;
-}
-
-.project summary svg {
-  transition: transform .25s;
-}
-
-.project details[open] summary svg {
-  transform: rotate(45deg);
-}
-
-.projectDetail {
-  padding: 2px 0 25px;
-}
-
-.projectDetail> :global(.mono) {
-  font-size: .75rem;
+.projectFoot> :global(.mono) {
   color: #68805c;
+  font-size: .75rem;
 }
 
-.projectDetail h4 {
-  margin: 15px 0 10px;
-  font-size: 1.1rem;
-  font-weight: 500;
-}
-
-.projectDetail p {
-  font-size: .875rem;
-  color: #617063;
-  margin-bottom: 12px;
-}
-
-.projectDetail a {
+.projectFoot a {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   border-bottom: 1px solid #a3bb91;
-  padding-bottom: 4px;
+  padding-bottom: 3px;
   font-size: .8125rem;
+  font-weight: 500;
 }
 
 /* Breakpoints ------------------------------------------------------------ */
@@ -524,7 +1940,7 @@
 
   .project.featured,
   .project.featured.mirrored {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .mirrored>.projectVisual {
@@ -549,8 +1965,10 @@
 }
 
 @media (max-width: 760px) {
+  /* minmax(0, 1fr), not 1fr: a bare 1fr track grows to its widest child's
+     min-content width (segmented controls, SVGs), pushing cards off screen. */
   .projectGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 28px;
   }
 
@@ -571,24 +1989,124 @@
     font-size: 1.6rem;
   }
 
-  .fusionVisual {
-    padding: 56px 20px 44px;
+  .keyStats {
+    gap: 12px;
   }
 
-  .fusionBody {
+  .keyStats dt {
+    font-size: 1.35rem;
+  }
+
+  .keyStats dd {
+    font-size: .75rem;
+  }
+
+  .dfStages {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Under the panel label, not beside it: there is no room for both. */
+  .wipBadge {
+    top: 42px;
+    left: 16px;
+    right: auto;
+  }
+
+  .marieStage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .marieModes .segmented {
+    border-radius: 14px;
+  }
+
+  .projectVisual.fusionVisual,
+  .projectVisual.replayVisual,
+  .projectVisual.diffusionVisual,
+  .projectVisual.marieVisual,
+  .projectVisual.roverVisual,
+  .projectVisual.uavVisual {
+    padding: 76px 16px 16px;
+  }
+
+  /* No shared height on phones: the drawing sizes by its own aspect. */
+  .replaySvg {
+    flex: none;
+    min-height: 0;
+  }
+
+  /* The note gets its own line under the buttons. */
+  .animBar .visualNote {
+    flex-basis: 100%;
+    text-align: left;
+  }
+
+  .rvTop,
+  .uvTop {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .rvCol {
+    display: contents;
+  }
+
+  .rvField,
+  .uvCam {
+    order: 1;
+  }
+
+  .rvInspect,
+  .uvCommand {
+    order: 2;
+  }
+
+  .rvMap,
+  .uvExt {
+    order: 3;
+  }
+
+  .rvTop .rvFoot,
+  .uvTop .rvFoot {
+    order: 4;
+  }
+
+  .rvCrop {
+    max-width: 240px;
+    margin: 0 auto;
+  }
+
+  /* The drawing renders near 1:1 here, so its labels need larger units. */
+  .svgLabel {
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 520px) {
+  .sensorStage {
     grid-template-columns: 1fr;
-    gap: 26px;
   }
 
-  .fusionResults {
-    padding: 22px 0 0;
-    border-left: 0;
-    border-top: 1px solid #2c5256;
+  .sonarPane {
+    width: 78%;
+    justify-self: center;
+  }
+
+  .fusionStory {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .resultBar {
+  .detBox,
+  .zoneTag,
+  .bRec,
+  .marieDialog p,
+  .rvCrop,
+  .rvMapped {
     animation: none;
   }
 }
@@ -605,9 +2123,5 @@
   .project {
     break-inside: avoid;
     margin: 20px 0;
-  }
-
-  .project details .projectDetail {
-    display: block;
   }
 }

@@ -208,6 +208,14 @@
   border-left: 0;
 }
 
+.highlightKicker {
+  display: block;
+  margin-bottom: 12px;
+  color: #8fa596;
+  font-size: .625rem;
+  letter-spacing: .08em;
+}
+
 .highlight dt {
   display: flex;
   align-items: baseline;

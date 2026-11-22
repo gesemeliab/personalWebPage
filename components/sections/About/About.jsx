@@ -43,22 +43,22 @@ export function About() {
             Hands-on by design.
           </h2>
           <p className={styles.largeCopy}>
-            I work on robot perception for decision-making: turning multimodal sensor data into
+            Robot perception for decision-making: turning multimodal sensor data into
             representations of the world that robots can act on for navigation and planning.
           </p>
           <p>
-            I’m a Ph.D. student in Electrical and Computer Engineering at Rochester Institute of
-            Technology and a Graduate Research Assistant in KAS Lab, advised by Prof. Mohammad
-            Javad Khojasteh. Right now I’m building perception that survives sensor degradation on
-            underwater robots, fusing camera and sonar so an AUV keeps seeing when the water goes
-            dark. I’m increasingly drawn to world models (JEPA), diffusion models for planning, and
-            MPC driven by learned perception.
+            Ph.D. student in Electrical and Computer Engineering at Rochester Institute of
+            Technology and Graduate Research Assistant in KAS Lab, advised by Prof. Mohammad Javad
+            Khojasteh. Current research focuses on perception that withstands sensor degradation on
+            underwater robots, fusing camera and sonar so that an AUV keeps perceiving its
+            surroundings as visibility drops. Broader interests include world models (JEPA),
+            diffusion models for planning, and MPC driven by learned perception.
           </p>
           <p>
-            I’ve spent nine years putting perception on physical robots: quad-rotors, field rovers
-            and AUVs. Before RIT, I spent four and a half years at Intel Labs, where I architected
-            a real-time RGB-D and audio perception system that went from research prototype to
-            deployment in three semiconductor fabs worldwide.
+            Nine years of experience deploying perception on physical robots: quad-rotors, field
+            rovers and AUVs. Previously, four and a half years at Intel Labs, architecting a
+            real-time multimodal perception system taken from research prototype to deployment in
+            three semiconductor fabs worldwide.
           </p>
           <LinkList links={links} />
         </div>

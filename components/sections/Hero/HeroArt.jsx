@@ -23,7 +23,6 @@ export function HeroArt() {
     >
       <div className={cx(styles.artCoordinates, "mono")}>
         <span>FIG. 001</span>
-        <span>PERCEPTION → PLANNING</span>
       </div>
       <Image
         className={styles.robotArt}
@@ -37,7 +36,7 @@ export function HeroArt() {
       />
       <div className={cx(styles.artFooter, "mono")}>
         <span>PERCEIVE / PREDICT / ACT</span>
-        <span>CONCEPT STUDY</span>
+        <span>CONCEPTUAL ILLUSTRATION</span>
       </div>
     </div>
   );

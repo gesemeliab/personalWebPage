@@ -8,7 +8,7 @@ import styles from "./Experience.module.css";
 export function Experience() {
   return (
     <section className={styles.experienceSection} id="experience">
-      <SectionLabel index="05 / EXPERIENCE & EDUCATION" caption="THE PATH SO FAR" />
+      <SectionLabel index="04 / EXPERIENCE & EDUCATION" caption="THE PATH SO FAR" />
 
       <div className={styles.careerGrid}>
         <div>
@@ -19,7 +19,7 @@ export function Experience() {
           </h2>
           <p className={styles.careerIntro}>
             Nine years of putting perception on physical robots and into deployment, from
-            quad-rotors to semiconductor fabs to AUVs.
+            a quadrotor to semiconductor fabs to AUVs.
           </p>
 
           <h3 className={cx(styles.educationTitle, "mono")}>EDUCATION</h3>

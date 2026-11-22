@@ -17,10 +17,10 @@ export default function HomePage() {
       <main id="main">
         <Hero />
         <About />
-        <Research />
         <Work />
         <Publications />
         <Experience />
+        <Research />
         <Contact />
       </main>
     </>

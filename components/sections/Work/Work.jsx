@@ -13,7 +13,7 @@ const featuredIds = projects.filter(({ featured }) => featured).map(({ id }) => 
 export function Work() {
   return (
     <section className={styles.workSection} id="work">
-      <SectionLabel index="03 / SELECTED WORK" caption="RESEARCH IN PRACTICE" variant="contained" />
+      <SectionLabel index="02 / SELECTED WORK" caption="RESEARCH IN PRACTICE" variant="contained" />
 
       <SectionHeading
         variant="contained"
@@ -26,9 +26,9 @@ export function Work() {
         }
         description={
           <>
-            Perception systems I’ve built and shipped,
+            Robot perception underwater, on the ground,
             <br />
-            on robots underwater, on the ground, in the air, and in the fab.
+            in the air, and in the fab.
           </>
         }
       />

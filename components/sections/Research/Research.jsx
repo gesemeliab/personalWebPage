@@ -3,36 +3,37 @@ import { SectionLabel } from "@/components/layout/SectionLabel/SectionLabel";
 import { researchDirections } from "@/data/research";
 import styles from "./Research.module.css";
 
-/** The three research directions. */
+/** Where the work is headed: for each area, what is done and what is next. */
 export function Research() {
   return (
-    <section className={styles.researchSection} id="research">
-      <SectionLabel index="02 / RESEARCH" caption="QUESTIONS I’M EXPLORING" />
+    <section className={styles.researchSection} id="directions">
+      <SectionLabel index="05 / DIRECTIONS" caption="DONE SO FAR, AND NEXT" />
 
       <SectionHeading
-        title={
-          <>
-            What does a robot need
-            <br />
-            to see in order to act?
-          </>
-        }
-        description={
-          <>
-            Three connected directions, one goal:
-            <br />
-            perception that decisions can rely on.
-          </>
-        }
+        title="Where the work is headed."
+        description="Each direction starts from the work above."
       />
 
-      <div className={styles.researchGrid}>
-        {researchDirections.map(({ id, number, title, description, tags }) => (
-          <article className={styles.researchItem} key={id}>
-            <span className={`${styles.researchNumber} mono`}>{number}</span>
-            <h3>{title}</h3>
-            <p>{description}</p>
-            <span className={`${styles.researchTags} mono`}>{tags}</span>
+      <div className={styles.directions}>
+        <div className={`${styles.directionsHead} mono`} aria-hidden="true">
+          <span>AREA</span>
+          <span>SO FAR</span>
+          <span>NEXT</span>
+        </div>
+        {researchDirections.map(({ id, number, title, done, next }) => (
+          <article className={styles.direction} key={id}>
+            <h3>
+              <span className="mono">{number}</span>
+              {title}
+            </h3>
+            <div>
+              <span className={`${styles.directionTag} mono`}>SO FAR</span>
+              <p>{done}</p>
+            </div>
+            <div>
+              <span className={`${styles.directionTag} mono`}>NEXT</span>
+              <p className={styles.next}>{next}</p>
+            </div>
           </article>
         ))}
       </div>

@@ -3,69 +3,83 @@
   padding-top: 22px;
 }
 
-.researchGrid {
+/* A three-column table on desktop: area, what is done, what is next. */
+.directions {
+  border-bottom: 1px solid #cbd6c9;
+}
+
+.directionsHead,
+.direction {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.2fr) minmax(0, 1.2fr);
   gap: 40px;
 }
 
-.researchItem {
-  border-left: 1px solid #cbd6c9;
-  padding-left: 25px;
-  display: flex;
-  flex-direction: column;
-}
-
-.researchNumber {
+.directionsHead {
+  padding-bottom: 12px;
   color: #6b806a;
-  margin-bottom: 36px;
+  font-size: .6875rem;
+  letter-spacing: .06em;
 }
 
-.researchItem h3 {
-  font-size: 1.45rem;
+.direction {
+  padding: 26px 0;
+  border-top: 1px solid #cbd6c9;
+}
+
+.direction h3 {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+  margin: 0;
+  font-size: 1.3rem;
   letter-spacing: -.02em;
-  margin-bottom: 15px;
 }
 
-.researchItem p {
-  font-size: 1rem;
-  color: var(--muted);
-  margin-bottom: 25px;
-}
-
-.researchTags {
+.direction h3> :global(.mono) {
+  color: #6b806a;
   font-size: .75rem;
-  letter-spacing: .01em;
-  color: #486039;
-  line-height: 1.8;
-  margin-top: auto;
+  font-weight: 400;
+}
+
+.direction p {
+  margin: 0;
+  font-size: .9375rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.direction p.next {
+  color: var(--ink);
+}
+
+/* Shown only when the columns stack and the header row is hidden. */
+.directionTag {
+  display: none;
+  margin-bottom: 6px;
+  color: #6b806a;
+  font-size: .625rem;
+  letter-spacing: .06em;
 }
 
 @media (max-width: 1000px) {
-  .researchGrid {
-    gap: 20px;
-  }
-
-  .researchItem {
-    padding-left: 18px;
+  .directionsHead,
+  .direction {
+    gap: 24px;
   }
 }
 
 @media (max-width: 760px) {
-  .researchGrid {
-    grid-template-columns: 1fr;
-    gap: 32px;
+  .directionsHead {
+    display: none;
   }
 
-  .researchItem {
-    padding-left: 22px;
+  .direction {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
   }
 
-  .researchNumber {
-    margin-bottom: 16px;
-  }
-
-  .researchItem p {
-    margin-bottom: 15px;
+  .directionTag {
+    display: block;
   }
 }

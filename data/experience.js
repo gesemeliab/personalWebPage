@@ -31,7 +31,7 @@ export const timeline = [
     organization: "KAS Lab · Rochester Institute of Technology",
     role: "Graduate Research Assistant · Advisor: Prof. Mohammad Javad Khojasteh",
     description:
-      "Perception under sensor degradation for AUVs: an RGB–forward-looking-sonar fusion detector that keeps the robot seeing when the camera fails. Ongoing: MPC with a control-barrier-function safety filter for multi-agent AUV navigation under model uncertainty.",
+      "Perception under sensor degradation for AUVs: an RGB–forward-looking-sonar fusion detector that keeps the robot seeing when the camera fails. Ongoing: MPC with a control-barrier-function safety filter for AUV navigation among moving obstacles.",
   },
   {
     id: "intel-labs",
@@ -39,7 +39,7 @@ export const timeline = [
     organization: "Intel Labs · Intelligent Systems Research Lab",
     role: "Software Research Engineer / Scientist",
     description:
-      "Architected MARIE, a real-time RGB-D + audio action-recognition system learned from expert demonstrations and deployed across three fabs. Built C++ ROS point-cloud perception and 6-DoF pose estimation for Kidspace.",
+      "Architected MARIE, a real-time multimodal action-recognition system learned from expert demonstrations and deployed across three fabs. Built C++ ROS point-cloud perception and 6-DoF pose estimation for Kidspace.",
   },
   {
     id: "cio-msc-research",
@@ -55,7 +55,7 @@ export const timeline = [
     organization: "Robotics & Perception Lab · CIO",
     role: "Undergraduate Research Assistant",
     description:
-      "Real-time face detection and person-following control, flight-tested on physical quad-rotor UAVs.",
+      "Real-time face detection and person-following control, flight-tested on a physical quad-rotor UAV.",
   },
 ];
 
