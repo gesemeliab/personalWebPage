@@ -1,3 +1,25 @@
+.navArea {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+/* Language switch: a small pill after the contact link, always visible. */
+.langSwitch {
+  padding: 5px 10px;
+  border: 1px solid #ffffff2e;
+  border-radius: 999px;
+  color: #eef3eb;
+  font-size: .75rem;
+  letter-spacing: .06em;
+  transition: border-color .2s, color .2s;
+}
+
+.langSwitch:hover {
+  border-color: var(--lime);
+  color: var(--lime);
+}
+
 .nav {
   display: flex;
   align-items: center;
@@ -37,6 +59,10 @@
 }
 
 @media (max-width: 760px) {
+  .navArea {
+    gap: 6px;
+  }
+
   .menuToggle {
     display: flex;
     padding: 12px;

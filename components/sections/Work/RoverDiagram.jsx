@@ -29,17 +29,87 @@ const HOLD_MS = 4000;
 const DRIVE = 18; // seconds of driving, end to end
 const STEP_S = 1.6; // seconds per pipeline stage while stopped
 const STAGES = [
-  { id: "a", name: "Lab a* channel" },
-  { id: "mask", name: "Threshold" },
-  { id: "box", name: "Contour + box" },
-  { id: "cnn", name: "CNN check" },
-  { id: "ripe", name: "R-channel ripeness" },
-  { id: "xyz", name: "Stereo → 3D" },
+  { id: "a" },
+  { id: "mask" },
+  { id: "box" },
+  { id: "cnn" },
+  { id: "ripe" },
+  { id: "xyz" },
 ];
 const STOP = STAGES.length * STEP_S;
 const ZOOM = 2.6;
 const FILL = 1.6;
-const LEVELS = ["L1 · unripe", "L2 · turning", "L3 · ripe"];
+/** Every string the animation shows, per language. */
+const TEXT = {
+  en: {
+    stages: { a: "Lab a* channel", mask: "Threshold", box: "Contour + box", cnn: "CNN check", ripe: "R-channel ripeness", xyz: "Stereo → 3D" },
+    levels: ["L1 · unripe", "L2 · turning", "L3 · ripe"],
+    captions: {
+      a: "Strawberries stand out in the a* channel of CIE-Lab.",
+      mask: "A threshold turns it into a binary mask: the region proposals.",
+      box: "Image operations clean the mask into a contour and a box.",
+      cnn: "A small MobileNetV2, sized for the Jetson, rejects false positives.",
+      ripe: (level) => `The red-channel histogram sets the ripeness level: ${level}.`,
+      xyz: "Stereo depth places the fruit in 3D, and it joins the map below.",
+    },
+    rIntensity: "R-channel intensity →",
+    strawberry: "strawberry ✓",
+    noDetection: "NO DETECTION YET",
+    fieldTotal: (total, rows) => `${total} STRAWBERRIES · ${rows} ROWS`,
+    waitHeader: "WAITING FOR A DETECTION",
+    waitCaption: "Driving the row until a strawberry enters the camera’s view.",
+    explainHeader: "DETECTION #1 · STEP BY STEP",
+    repeatHeader: "THE SAME PIPELINE · EVERY STRAWBERRY",
+    repeatCaption: (n, total) => `Run on the fly on the rover’s Jetson AGX Xavier, without stopping: ${n} of ${total} in this row.`,
+    fieldHeader: "FIELD MAPPED",
+    fieldCaption: "One pass per row. Every strawberry is placed on the map with its ripeness level.",
+    badge: "CONCEPT ILLUSTRATION",
+    stoppedCaption: "IN THE FIELD · STOPPED AT A DETECTION",
+    drivingCaption: "IN THE FIELD · ZED MINI ON THE ROVER",
+    fieldAria:
+      "A small rover with a stereo camera on a mast drives along the furrow beside a strawberry ridge, boxing each strawberry its camera sees.",
+    mapRow: "BUILDING THE MAP · THIS ROW, TOP-DOWN",
+    mapField: (rows) => `FIELD MAP · ${rows} ROWS · RIPENESS BY POSITION`,
+    mapAria:
+      "A top-down map built as the rover drives: each located strawberry appears at its position, coloured by ripeness. The view then zooms out to the whole field, where a stretch ripening unevenly is flagged.",
+    zone: "UNEVEN RIPENING",
+    zoneSub: " · check irrigation, nutrients",
+  },
+  es: {
+    stages: { a: "Canal a* (Lab)", mask: "Umbral", box: "Contorno + recuadro", cnn: "Filtro CNN", ripe: "Madurez (canal R)", xyz: "Estéreo → 3D" },
+    levels: ["L1 · verde", "L2 · pintona", "L3 · madura"],
+    captions: {
+      a: "Las fresas destacan en el canal a* del espacio CIE-Lab.",
+      mask: "La umbralización produce una máscara binaria: las propuestas de región.",
+      box: "El procesamiento de imagen depura la máscara y obtiene un contorno y su recuadro.",
+      cnn: "Una MobileNetV2 ligera, adecuada para la Jetson, descarta falsos positivos.",
+      ripe: (level) => `El histograma del canal R determina el nivel de madurez: ${level}.`,
+      xyz: "La profundidad estéreo localiza el fruto en 3D y lo incorpora al mapa.",
+    },
+    rIntensity: "Intensidad del canal R →",
+    strawberry: "fresa ✓",
+    noDetection: "SIN DETECCIONES AÚN",
+    fieldTotal: (total, rows) => `${total} FRESAS · ${rows} HILERAS`,
+    waitHeader: "EN ESPERA DE UNA DETECCIÓN",
+    waitCaption: "Avanzando por el surco hasta que una fresa entre en el campo de visión de la cámara.",
+    explainHeader: "DETECCIÓN N.º 1 · PASO A PASO",
+    repeatHeader: "EL MISMO PROCESO · PARA CADA FRESA",
+    repeatCaption: (n, total) => `Se ejecuta en tiempo real en la Jetson AGX Xavier del rover, sin detenerse: ${n} de ${total} en esta hilera.`,
+    fieldHeader: "CULTIVO MAPEADO",
+    fieldCaption: "Una pasada por hilera: cada fresa queda en el mapa con su nivel de madurez.",
+    badge: "ILUSTRACIÓN CONCEPTUAL",
+    stoppedCaption: "EN CAMPO · DETENIDO EN UNA DETECCIÓN",
+    drivingCaption: "EN CAMPO · ZED MINI A BORDO DEL ROVER",
+    fieldAria:
+      "Un rover pequeño con una cámara estéreo sobre un mástil avanza por el surco junto a un camellón de fresas y enmarca cada fresa que detecta su cámara.",
+    mapRow: "CONSTRUCCIÓN DEL MAPA · ESTA HILERA, VISTA CENITAL",
+    mapField: (rows) => `MAPA DEL CULTIVO · ${rows} HILERAS · MADUREZ POR POSICIÓN`,
+    mapAria:
+      "Mapa cenital que se construye mientras avanza el rover: cada fresa localizada aparece en su posición, coloreada según su madurez. Después la vista se amplía a todo el cultivo, donde se señala una zona de maduración desigual.",
+    zone: "MADURACIÓN DESIGUAL",
+    zoneSub: " · revisar riego y nutrientes",
+  },
+};
 const FRUIT_FILL = ["#c9dc8a", "#f2a54a", "#e5484d"];
 
 function mulberry32(seed) {
@@ -114,7 +184,7 @@ const TOTAL = FRUIT.length + OTHER.length;
 const rowReveal = (order, t) => clamp((t - (T_DRIVEN + ZOOM * 0.35 + order * 0.45)) / 0.5, 0, 1);
 
 /** The crop around one detection, as each stage of the pipeline sees it. */
-function Inspector({ fruit, stage, summary = false }) {
+function Inspector({ fruit, stage, summary = false, tx }) {
   const id = summary ? "summary" : STAGES[stage].id;
   const berry = "M60 40 Q80 30 100 40 Q98 66 80 80 Q62 66 60 40Z";
   const peak = [0.28, 0.55, 0.82][fruit.level];
@@ -160,7 +230,7 @@ function Inspector({ fruit, stage, summary = false }) {
             className={cx(styles.rvCropText, i === fruit.level && styles.on)}>{name}</text>
         ))}
         <line x1="10" x2="150" y1="82" y2="82" stroke="#3d6266" />
-        <text x="10" y="92" className={styles.rvCropText}>R-channel intensity →</text>
+        <text x="10" y="92" className={styles.rvCropText}>{tx.rIntensity}</text>
       </svg>
     );
   }
@@ -173,11 +243,11 @@ function Inspector({ fruit, stage, summary = false }) {
       <line x1="80" y1="14" x2="80" y2="34" stroke="#4d8e4f" strokeWidth="2" />
       <path d={berry} fill={FRUIT_FILL[fruit.level]} />
       <rect x="54" y="28" width="52" height="58" rx="2" className={styles.rvCropBox} />
-      {id === "cnn" ? <text x="54" y="24" className={styles.rvCropTag}>strawberry ✓</text> : null}
+      {id === "cnn" ? <text x="54" y="24" className={styles.rvCropTag}>{tx.strawberry}</text> : null}
       {id === "summary" ? (
         <>
-          <text x="54" y="24" className={styles.rvCropTag}>strawberry ✓</text>
-          <text x="112" y="74" className={styles.rvCropTag}>{LEVELS[fruit.level]}</text>
+          <text x="54" y="24" className={styles.rvCropTag}>{tx.strawberry}</text>
+          <text x="112" y="74" className={styles.rvCropTag}>{tx.levels[fruit.level]}</text>
         </>
       ) : null}
       {id === "xyz" || id === "summary" ? (
@@ -190,15 +260,8 @@ function Inspector({ fruit, stage, summary = false }) {
   );
 }
 
-function stageCaption(id, fruit) {
-  switch (id) {
-    case "a": return "Strawberries stand out in the a* channel of CIE-Lab.";
-    case "mask": return "A threshold turns it into a binary mask: the region proposals.";
-    case "box": return "Image operations clean the mask into a contour and a box.";
-    case "cnn": return "A small MobileNetV2, sized for the Jetson, rejects false positives.";
-    case "ripe": return `The red-channel histogram sets the ripeness level: ${LEVELS[fruit.level]}.`;
-    default: return "Stereo depth places the fruit in 3D, and it joins the map below.";
-  }
+function stageCaption(id, fruit, tx) {
+  return id === "ripe" ? tx.captions.ripe(tx.levels[fruit.level]) : tx.captions[id];
 }
 
 /** What the right-hand panel shows at time t. */
@@ -215,7 +278,8 @@ function panelState(t) {
   return { mode: "field" };
 }
 
-export function RoverDiagram({ label, note }) {
+export function RoverDiagram({ label, note, lang = "en" }) {
+  const tx = TEXT[lang];
   const [t, setT] = useState(T);
   const [paused, setPaused] = useState(false);
   const [ref, inView] = useInView({ threshold: 0.25 });
@@ -265,33 +329,33 @@ export function RoverDiagram({ label, note }) {
   let header;
   let caption;
   if (panel.mode === "wait") {
-    header = "WAITING FOR A DETECTION";
-    caption = "Driving the row until a strawberry enters the camera’s view.";
+    header = tx.waitHeader;
+    caption = tx.waitCaption;
   } else if (panel.mode === "explain") {
-    header = "DETECTION #1 · STEP BY STEP";
-    caption = stageCaption(STAGES[panel.stage].id, panel.fruit);
+    header = tx.explainHeader;
+    caption = stageCaption(STAGES[panel.stage].id, panel.fruit, tx);
   } else if (panel.mode === "repeat") {
-    header = "THE SAME PIPELINE · EVERY STRAWBERRY";
-    caption = `Run on the fly on the rover’s Jetson AGX Xavier, without stopping: ${panel.n} of ${FRUIT.length} in this row.`;
+    header = tx.repeatHeader;
+    caption = tx.repeatCaption(panel.n, FRUIT.length);
   } else {
-    header = "FIELD MAPPED";
-    caption = "One pass per row. Every strawberry is placed on the map with its ripeness level.";
+    header = tx.fieldHeader;
+    caption = tx.fieldCaption;
   }
 
   return (
     <div className={cx(styles.projectVisual, styles.roverVisual)} ref={ref}>
       <span className={cx(styles.visualLabel, "mono")}>{label}</span>
-      <span className={cx(styles.wipBadge, "mono")}>CONCEPT ILLUSTRATION</span>
+      <span className={cx(styles.wipBadge, "mono")}>{tx.badge}</span>
 
       <div className={styles.visualBody}>
         <div className={styles.rvTop}>
           <div className={styles.rvCol}>
             <figure className={cx(styles.rvPanel, styles.rvField)}>
               <figcaption className="mono">
-                {stopped ? "IN THE FIELD · STOPPED AT A DETECTION" : "IN THE FIELD · ZED MINI ON THE ROVER"}
+                {stopped ? tx.stoppedCaption : tx.drivingCaption}
               </figcaption>
               <svg viewBox="0 0 320 128" className={styles.rvSvg} role="img"
-                aria-label="A small rover with a stereo camera on a mast drives along the furrow beside a strawberry ridge, boxing each strawberry its camera sees.">
+                aria-label={tx.fieldAria}>
                 <rect x="0" y="86" width="320" height="42" className={styles.rvFurrow} />
                 <path d="M0 92 L0 58 Q10 50 24 50 L296 50 Q310 50 320 58 L320 92 Z" className={styles.rvRidge} />
                 <path d="M0 58 Q10 50 24 50 L296 50 Q310 50 320 58" className={styles.rvMulch} />
@@ -335,10 +399,10 @@ export function RoverDiagram({ label, note }) {
 
             <figure className={cx(styles.rvPanel, styles.rvMap)}>
               <figcaption className="mono">
-                {z < 0.5 ? "BUILDING THE MAP · THIS ROW, TOP-DOWN" : `FIELD MAP · ${ROWS} ROWS · RIPENESS BY POSITION`}
+                {z < 0.5 ? tx.mapRow : tx.mapField(ROWS)}
               </figcaption>
               <svg viewBox="0 0 320 140" className={styles.rvSvg} role="img"
-                aria-label="A top-down map built as the rover drives: each located strawberry appears at its position, coloured by ripeness. The view then zooms out to the whole field, where a stretch ripening unevenly is flagged.">
+                aria-label={tx.mapAria}>
                 {Array.from({ length: ROWS }, (_, j) => (
                   <rect key={j} {...rowRect(j)} rx={1.5}
                     className={styles.rvMapRidge} style={j === CUR ? undefined : { opacity: 0.25 + 0.75 * z }} />
@@ -366,8 +430,8 @@ export function RoverDiagram({ label, note }) {
                   <rect x={zx0} y={zy0} width={zx1 - zx0} height={zy1 - zy0} rx="3" />
                   <line x1={(zx0 + zx1) / 2} x2={(zx0 + zx1) / 2} y1="19" y2={zy0} />
                   <text x={(zx0 + zx1) / 2} y="14" textAnchor="middle">
-                    <tspan className={styles.rvZoneText}>UNEVEN RIPENING</tspan>
-                    <tspan className={styles.rvZoneSub}> · check irrigation, nutrients</tspan>
+                    <tspan className={styles.rvZoneText}>{tx.zone}</tspan>
+                    <tspan className={styles.rvZoneSub}>{tx.zoneSub}</tspan>
                   </text>
                 </g>
               </svg>
@@ -378,23 +442,23 @@ export function RoverDiagram({ label, note }) {
             <figure className={cx(styles.rvPanel, styles.rvInspect)}>
               <figcaption className="mono">{header}</figcaption>
               {panel.mode === "explain" ? (
-                <Inspector fruit={panel.fruit} stage={panel.stage} />
+                <Inspector fruit={panel.fruit} stage={panel.stage} tx={tx} />
               ) : panel.mode === "repeat" ? (
-                <Inspector key={panel.fruit.id} fruit={panel.fruit} summary />
+                <Inspector key={panel.fruit.id} fruit={panel.fruit} summary tx={tx} />
               ) : panel.mode === "wait" ? (
                 <svg viewBox="0 0 160 96" className={styles.rvCrop} aria-hidden="true">
                   <rect width="160" height="96" fill="#0b1f21" />
-                  <text x="80" y="51" textAnchor="middle" className={styles.rvCropText}>NO DETECTION YET</text>
+                  <text x="80" y="51" textAnchor="middle" className={styles.rvCropText}>{tx.noDetection}</text>
                 </svg>
               ) : (
                 <svg viewBox="0 0 160 96" className={styles.rvCrop} aria-hidden="true">
                   <rect width="160" height="96" fill="#0b1f21" />
-                  <text x="14" y="20" className={styles.rvCropText}>{`${TOTAL} STRAWBERRIES · ${ROWS} ROWS`}</text>
+                  <text x="14" y="20" className={styles.rvCropText}>{tx.fieldTotal(TOTAL, ROWS)}</text>
                   {[2, 1, 0].map((l, i) => (
                     <g key={l}>
                       <rect x="14" y={32 + i * 20} width={(counts[l] / TOTAL) * 104} height="10" rx="1.5" fill={FRUIT_FILL[l]} />
                       <text x={20 + (counts[l] / TOTAL) * 104} y={40 + i * 20} className={styles.rvCropText}>
-                        {`${LEVELS[l]} · ${Math.round((counts[l] / TOTAL) * 100)}%`}
+                        {`${tx.levels[l]} · ${Math.round((counts[l] / TOTAL) * 100)}%`}
                       </text>
                     </g>
                   ))}
@@ -404,7 +468,7 @@ export function RoverDiagram({ label, note }) {
                 {STAGES.map((s, i) => {
                   const isDone = panel.mode === "explain" ? i < panel.stage : panel.mode !== "wait";
                   const isOn = panel.mode === "explain" && i === panel.stage;
-                  return <li key={s.id} className={cx(isDone && styles.done, isOn && styles.on)}>{s.name}</li>;
+                  return <li key={s.id} className={cx(isDone && styles.done, isOn && styles.on)}>{tx.stages[s.id]}</li>;
                 })}
               </ol>
               <p className={styles.rvCaption}>{caption}</p>
@@ -412,7 +476,7 @@ export function RoverDiagram({ label, note }) {
 
             <div className={styles.rvFoot}>
               <ul className={cx(styles.rvLegend, "mono")} aria-live="off">
-                {LEVELS.map((name, l) => (
+                {tx.levels.map((name, l) => (
                   <li key={name}><i style={{ background: FRUIT_FILL[l] }} />{`${name} · ${counts[l]}`}</li>
                 ))}
               </ul>
@@ -423,6 +487,7 @@ export function RoverDiagram({ label, note }) {
 
       <PlaybackBar
         note={note}
+        lang={lang}
         paused={paused}
         disabled={reduced !== false}
         onToggle={() => setPaused((p) => !p)}

@@ -4,21 +4,26 @@ import { useEffect, useState } from "react";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { cx } from "@/lib/classNames";
 import { useActiveSection } from "@/hooks/useActiveSection";
-import { contactLink, navigation } from "@/data/site";
 import styles from "./Navigation.module.css";
 
-const SECTION_IDS = navigation.map(({ id }) => id);
-
 /**
- * Primary navigation and the toggle that opens it on small screens.
+ * Primary navigation, the language switch, and the toggle that opens the
+ * navigation on small screens.
  *
- * Renders both elements as siblings of the wordmark, so the header keeps its
- * wordmark / toggle / nav order. The link for the section currently in view is
- * marked active, following a link closes the menu, and so does Escape.
+ * The link for the section currently in view is marked active; following a
+ * link closes the menu, and so does Escape. The language switch keeps the
+ * section the reader is on: it carries the current #hash to the other page.
+ *
+ * @param {object} props
+ * @param {{id: string, label: string}[]} props.items
+ * @param {{label: string, href: string}} props.contact
+ * @param {{label: string, open: string, close: string, switchLang: string, switchLangLabel: string}} props.text
+ * @param {string} props.otherLang - the other language's code, e.g. "es".
+ * @param {string} props.otherHref - the other language's page, e.g. "/es/".
  */
-export function Navigation() {
+export function Navigation({ items, contact, text, otherLang, otherHref }) {
   const [open, setOpen] = useState(false);
-  const active = useActiveSection(SECTION_IDS);
+  const active = useActiveSection(items.map(({ id }) => id));
   const close = () => setOpen(false);
 
   useEffect(() => {
@@ -29,21 +34,16 @@ export function Navigation() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  return (
-    <>
-      <button
-        className={styles.menuToggle}
-        type="button"
-        aria-label={open ? "Close navigation" : "Open navigation"}
-        aria-expanded={open}
-        aria-controls="main-nav"
-        onClick={() => setOpen((current) => !current)}
-      >
-        {open ? <X /> : <Menu />}
-      </button>
+  // Point the link at the same section on the other page just before the
+  // browser follows it.
+  const switchLanguage = (event) => {
+    event.currentTarget.href = `${otherHref}${window.location.hash}`;
+  };
 
-      <nav className={cx(styles.nav, open && styles.isOpen)} id="main-nav" aria-label="Main navigation">
-        {navigation.map(({ id, label }) => (
+  return (
+    <div className={styles.navArea}>
+      <nav className={cx(styles.nav, open && styles.isOpen)} id="main-nav" aria-label={text.label}>
+        {items.map(({ id, label }) => (
           <a
             key={id}
             className={active === id ? styles.active : undefined}
@@ -54,10 +54,32 @@ export function Navigation() {
             {label}
           </a>
         ))}
-        <a className={styles.navContact} href={contactLink.href} onClick={close}>
-          {contactLink.label} <ArrowUpRight size={16} />
+        <a className={styles.navContact} href={contact.href} onClick={close}>
+          {contact.label} <ArrowUpRight size={16} />
         </a>
       </nav>
-    </>
+
+      <a
+        className={cx(styles.langSwitch, "mono")}
+        href={otherHref}
+        hrefLang={otherLang}
+        lang={otherLang}
+        aria-label={text.switchLangLabel}
+        onClick={switchLanguage}
+      >
+        {text.switchLang}
+      </a>
+
+      <button
+        className={styles.menuToggle}
+        type="button"
+        aria-label={open ? text.close : text.open}
+        aria-expanded={open}
+        aria-controls="main-nav"
+        onClick={() => setOpen((current) => !current)}
+      >
+        {open ? <X /> : <Menu />}
+      </button>
+    </div>
   );
 }

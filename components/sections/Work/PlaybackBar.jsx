@@ -1,4 +1,5 @@
 import { Pause, Play, RotateCcw } from "lucide-react";
+import { ui } from "@/data/ui";
 import styles from "./Work.module.css";
 
 /**
@@ -11,18 +12,20 @@ import styles from "./Work.module.css";
  * @param {boolean} [props.disabled] - true while motion is not allowed.
  * @param {() => void} [props.onToggle] - omit for a visual with no playback.
  * @param {() => void} [props.onRestart]
+ * @param {"en"|"es"} [props.lang]
  */
-export function PlaybackBar({ note, paused = false, disabled = false, onToggle, onRestart }) {
+export function PlaybackBar({ note, paused = false, disabled = false, onToggle, onRestart, lang = "en" }) {
+  const text = ui[lang].playback;
   return (
     <div className={styles.animBar}>
       {onToggle ? (
         <div className={styles.animControls}>
           <button type="button" className={styles.replayToggle} onClick={onRestart}
-            aria-label="Restart animation" disabled={disabled}>
+            aria-label={text.restart} disabled={disabled}>
             <RotateCcw size={14} />
           </button>
           <button type="button" className={styles.replayToggle} onClick={onToggle}
-            aria-label={paused ? "Play animation" : "Pause animation"} disabled={disabled}>
+            aria-label={paused ? text.play : text.pause} disabled={disabled}>
             {paused || disabled ? <Play size={14} /> : <Pause size={14} />}
           </button>
         </div>

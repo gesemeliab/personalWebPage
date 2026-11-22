@@ -60,7 +60,33 @@ objects, not in JSX. `data/` is the source of truth for the site's content. Edit
 exactly once (the hero headline, the about paragraphs) stays in its component,
 where it reads as part of the markup.
 
-Adding a fourth project means appending one object to `data/projects.js`.
+Adding a project means appending one object to `data/projects.js`, plus its
+Spanish text under the same id in `data/es.js`.
+
+## Languages
+
+The page exists in English (`/`) and Spanish (`/es/`). Each has its own root
+layout in a route group — `app/(en)/layout.js` and `app/(es)/layout.js` — so
+each page carries the right `<html lang>`, title, description, canonical link
+and `hreflang` alternates (built in `components/layout/Document/Document.jsx`).
+Both render the same `components/HomePage.jsx` with a `lang` prop. With two
+root layouts there is no single layout for the 404 page, so
+`app/global-not-found.js` (enabled in `next.config.mjs`) renders it.
+
+Where the text lives:
+
+- `data/*.js` — the English content, and the only place links, numbers,
+  figures and ordering are defined.
+- `data/es.js` — Spanish text only, keyed by the same ids; `lib/content.js`
+  merges it over the English data. `getContent(lang)` is what sections read.
+- `data/ui.js` — interface strings (section labels, buttons, accessible names)
+  for both languages.
+- Each project animation keeps its own `TEXT = { en, es }` table at the top of
+  its file and receives `lang` as a prop.
+
+To change wording, edit the English entry and its Spanish counterpart
+together. The header's EN / ES switch keeps the reader's current section by
+carrying the `#hash` across.
 
 ## Styles
 

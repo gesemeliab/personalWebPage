@@ -120,9 +120,57 @@ const RUN = (() => {
   return { states: out, trail };
 })();
 
-const ARROWS = {
-  roll: ["← fast", "← slow", "hold", "slow →", "fast →"],
-  thrust: ["↑ fast", "↑ slow", "hold", "↓ slow", "↓ fast"],
+/** Every string the animation shows, per language. */
+const TEXT = {
+  en: {
+    roll: ["← fast", "← slow", "hold", "slow →", "fast →"],
+    thrust: ["↑ fast", "↑ slow", "hold", "↓ slow", "↓ fast"],
+    hold: "hold",
+    forward: "forward",
+    box: (width, target) => `box ${width} / ${target} px`,
+    rollLabel: "Roll",
+    thrustLabel: "Thrust",
+    pitchLabel: "Pitch",
+    locked: "LOCKED · FACE",
+    searchingFace: "UPPER BODY · SEARCHING FACE",
+    searching: "SEARCHING · HOVER",
+    upperBody: "UPPER BODY",
+    rejected: "UPPER BODY? NO FACE → REJECTED",
+    cameraAria:
+      "The drone's camera view: a person is found as an upper body, then a face inside it; the zone of the face centre in the frame sets the flight command.",
+    externalAria: "Top-down view: the quadrotor follows the person, keeping them in its camera's field of view at a set distance.",
+    altitude: (z) => `ALTITUDE ${z} m`,
+    badge: "CONCEPT ILLUSTRATION",
+    onboard: "ONBOARD CAMERA · JETSON TX2",
+    external: "EXTERNAL VIEW · TOP-DOWN",
+    command: "FLIGHT COMMAND · MAVLINK",
+    legend: ["Upper body", "Face", "Slow zone", "Fast zone"],
+  },
+  es: {
+    roll: ["← rápido", "← lento", "mantener", "lento →", "rápido →"],
+    thrust: ["↑ rápido", "↑ lento", "mantener", "↓ lento", "↓ rápido"],
+    hold: "mantener",
+    forward: "hacia adelante",
+    box: (width, target) => `recuadro ${width} / ${target} px`,
+    rollLabel: "Alabeo",
+    thrustLabel: "Empuje",
+    pitchLabel: "Cabeceo",
+    locked: "OBJETIVO FIJADO · ROSTRO",
+    searchingFace: "TORSO · BUSCANDO ROSTRO",
+    searching: "BÚSQUEDA · VUELO ESTACIONARIO",
+    upperBody: "TORSO",
+    rejected: "¿TORSO? SIN ROSTRO → DESCARTADO",
+    cameraAria:
+      "Vista de la cámara del dron: primero se detecta el torso de una persona y después el rostro dentro de él; la zona en la que cae el centro del rostro determina el comando de vuelo.",
+    externalAria:
+      "Vista cenital: el cuadricóptero sigue a la persona y la mantiene en el campo de visión de su cámara a una distancia definida.",
+    altitude: (z) => `ALTITUD ${z} m`,
+    badge: "ILUSTRACIÓN CONCEPTUAL",
+    onboard: "CÁMARA A BORDO · JETSON TX2",
+    external: "VISTA EXTERNA · CENITAL",
+    command: "COMANDO DE VUELO · MAVLINK",
+    legend: ["Torso", "Rostro", "Zona lenta", "Zona rápida"],
+  },
 };
 
 /** One person, drawn in the camera frame. */
@@ -142,7 +190,7 @@ function Person({ face, walking, t }) {
 }
 
 /** The onboard camera frame, 640×480, with the zone grid and detections. */
-function CameraView({ st }) {
+function CameraView({ st, tx }) {
   const { d, p, frame } = st;
   const face = project(d, p.x, p.y, FACE_H);
   const horizon = 240;
@@ -160,7 +208,7 @@ function CameraView({ st }) {
 
   return (
     <svg viewBox="0 0 640 480" className={styles.rvSvg} role="img"
-      aria-label="The drone's camera view: a person is found as an upper body, then a face inside it; the zone of the face centre in the frame sets the flight command.">
+      aria-label={tx.cameraAria}>
       <rect width="640" height={horizon} className={styles.uvSky} />
       <rect y={horizon} width="640" height={480 - horizon} className={styles.uvGrass} />
       {TREES.map((tr) => {
@@ -186,13 +234,13 @@ function CameraView({ st }) {
       {frame.decoy ? (
         <g>
           <rect x={decoy.u - 0.95 * decoy.s} y={decoy.v - 0.75 * decoy.s} width={1.9 * decoy.s} height={1.5 * decoy.s} className={styles.uvDecoy} />
-          <text x={decoy.u} y={decoy.v + 0.75 * decoy.s + 26} textAnchor="middle" className={styles.uvTagWarn}>UPPER BODY? NO FACE → REJECTED</text>
+          <text x={decoy.u} y={decoy.v + 0.75 * decoy.s + 26} textAnchor="middle" className={styles.uvTagWarn}>{tx.rejected}</text>
         </g>
       ) : null}
       {frame.detected ? (
         <g>
           <rect x={frame.u - 0.34 * face.s} y={frame.v - 0.22 * face.s} width={0.68 * face.s} height={0.95 * face.s} className={styles.uvBody} />
-          <text x={frame.u - 0.34 * face.s} y={frame.v - 0.22 * face.s - 8} className={styles.uvTagBody}>UPPER BODY</text>
+          <text x={frame.u - 0.34 * face.s} y={frame.v - 0.22 * face.s - 8} className={styles.uvTagBody}>{tx.upperBody}</text>
           {st.faceOn ? (
             <>
               <rect x={frame.u - 0.15 * face.s} y={frame.v - 0.15 * face.s} width={0.3 * face.s} height={0.3 * face.s} className={styles.uvFace} />
@@ -202,14 +250,14 @@ function CameraView({ st }) {
           ) : null}
         </g>
       ) : null}
-      <text x="16" y="30" className={styles.uvHud}>{frame.detected ? (st.faceOn ? "LOCKED · FACE" : "UPPER BODY · SEARCHING FACE") : "SEARCHING · HOVER"}</text>
+      <text x="16" y="30" className={styles.uvHud}>{frame.detected ? (st.faceOn ? tx.locked : tx.searchingFace) : tx.searching}</text>
       <text x="624" y="466" textAnchor="end" className={styles.uvHud}>640 × 480</text>
     </svg>
   );
 }
 
 /** Top-down view: the quadrotor, its camera's field of view, the person. */
-function ExternalView({ st }) {
+function ExternalView({ st, tx }) {
   const K = 7;
   const X = (wy) => 16 + (wy + 1) * K;
   const Y = (wx) => 52 + wx * K;
@@ -220,7 +268,7 @@ function ExternalView({ st }) {
   const dist = Math.hypot(p.x - d.x, p.y - d.y);
   return (
     <svg viewBox="0 0 320 100" className={styles.rvSvg} role="img"
-      aria-label="Top-down view: the quadrotor follows the person, keeping them in its camera's field of view at a set distance.">
+      aria-label={tx.externalAria}>
       <path d={`M${X(d.y)} ${Y(d.x)} L${X(d.y + reach)} ${Y(d.x - reach * spread)} L${X(d.y + reach)} ${Y(d.x + reach * spread)} Z`}
         className={styles.uvFov} />
       <polyline points={trail.map((s) => `${X(s.d.y)},${Y(s.d.x)}`).join(" ")} className={styles.uvTrailDrone} />
@@ -236,12 +284,13 @@ function ExternalView({ st }) {
         <path d="M-5 -5 L5 5 M-5 5 L5 -5" />
         {[[-5, -5], [5, -5], [-5, 5], [5, 5]].map(([a, b]) => <circle key={`${a}${b}`} cx={a} cy={b} r="2.6" />)}
       </g>
-      <text x="312" y="93" textAnchor="end" className={styles.uvMapText}>{`ALTITUDE ${d.z.toFixed(1)} m`}</text>
+      <text x="312" y="93" textAnchor="end" className={styles.uvMapText}>{tx.altitude(d.z.toFixed(1))}</text>
     </svg>
   );
 }
 
-export function UavDiagram({ label, note }) {
+export function UavDiagram({ label, note, lang = "en" }) {
+  const tx = TEXT[lang];
   const [t, setT] = useState(T);
   const [paused, setPaused] = useState(false);
   const [ref, inView] = useInView({ threshold: 0.25 });
@@ -265,33 +314,33 @@ export function UavDiagram({ label, note }) {
   return (
     <div className={cx(styles.projectVisual, styles.uavVisual)} ref={ref}>
       <span className={cx(styles.visualLabel, "mono")}>{label}</span>
-      <span className={cx(styles.wipBadge, "mono")}>CONCEPT ILLUSTRATION</span>
+      <span className={cx(styles.wipBadge, "mono")}>{tx.badge}</span>
 
       <div className={styles.visualBody}>
         <div className={styles.uvTop}>
           <div className={styles.rvCol}>
             <figure className={cx(styles.rvPanel, styles.uvCam)}>
-              <figcaption className="mono">ONBOARD CAMERA · JETSON TX2</figcaption>
-              <CameraView st={st} />
+              <figcaption className="mono">{tx.onboard}</figcaption>
+              <CameraView st={st} tx={tx} />
             </figure>
 
             <figure className={cx(styles.rvPanel, styles.uvExt)}>
-              <figcaption className="mono">EXTERNAL VIEW · TOP-DOWN</figcaption>
-              <ExternalView st={st} />
+              <figcaption className="mono">{tx.external}</figcaption>
+              <ExternalView st={st} tx={tx} />
             </figure>
           </div>
 
           <div className={styles.rvCol}>
             <figure className={cx(styles.rvPanel, styles.uvCommand)}>
-              <figcaption className="mono">FLIGHT COMMAND · MAVLINK</figcaption>
+              <figcaption className="mono">{tx.command}</figcaption>
               <dl className={cx(styles.uvReadout, "mono")}>
-                <div><dt>Roll</dt><dd className={locked && f.roll ? styles.on : undefined}>{locked ? ARROWS.roll[f.roll + 2] : "hold"}</dd></div>
-                <div><dt>Thrust</dt><dd className={locked && f.thrust ? styles.on : undefined}>{locked ? ARROWS.thrust[f.thrust + 2] : "hold"}</dd></div>
+                <div><dt>{tx.rollLabel}</dt><dd className={locked && f.roll ? styles.on : undefined}>{locked ? tx.roll[f.roll + 2] : tx.hold}</dd></div>
+                <div><dt>{tx.thrustLabel}</dt><dd className={locked && f.thrust ? styles.on : undefined}>{locked ? tx.thrust[f.thrust + 2] : tx.hold}</dd></div>
                 <div>
-                  <dt>Pitch</dt>
+                  <dt>{tx.pitchLabel}</dt>
                   <dd className={locked && f.pitch ? styles.on : undefined}>
-                    {locked ? (f.pitch ? "forward" : "hold") : "hold"}
-                    {locked ? <small>{`box ${Math.round(f.width)} / ${Math.round(TARGET_W)} px`}</small> : null}
+                    {locked ? (f.pitch ? tx.forward : tx.hold) : tx.hold}
+                    {locked ? <small>{tx.box(Math.round(f.width), Math.round(TARGET_W))}</small> : null}
                   </dd>
                 </div>
               </dl>
@@ -300,10 +349,10 @@ export function UavDiagram({ label, note }) {
 
             <div className={styles.rvFoot}>
               <ul className={cx(styles.rvLegend, "mono")}>
-                <li><i className={styles.lgBody} />Upper body</li>
-                <li><i className={styles.lgFace} />Face</li>
-                <li><i className={styles.lgSlow} />Slow zone</li>
-                <li><i className={styles.lgFast} />Fast zone</li>
+                <li><i className={styles.lgBody} />{tx.legend[0]}</li>
+                <li><i className={styles.lgFace} />{tx.legend[1]}</li>
+                <li><i className={styles.lgSlow} />{tx.legend[2]}</li>
+                <li><i className={styles.lgFast} />{tx.legend[3]}</li>
               </ul>
             </div>
           </div>
@@ -312,6 +361,7 @@ export function UavDiagram({ label, note }) {
 
       <PlaybackBar
         note={note}
+        lang={lang}
         paused={paused}
         disabled={reduced !== false}
         onToggle={() => setPaused((p) => !p)}

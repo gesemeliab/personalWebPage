@@ -9,6 +9,30 @@ import { PlaybackBar } from "./PlaybackBar";
 import styles from "./Work.module.css";
 
 const SPEED = 3; // replay at 3x real time
+
+/** Every string the replay shows, per language. */
+const TEXT = {
+  en: {
+    badge: "SIMULATION RUN",
+    hud: (nearest, contact) => `nearest ${nearest} m · contact at ${contact} m`,
+    active: "CBF FILTER ACTIVE",
+    nominal: "NOMINAL MPC",
+    margin: "CBF MARGIN h(t) · MIN",
+    legend: ["AUV", "Filter active", "Moving obstacle (point mass)", "Waypoint"],
+    aria: (waypoints, obstacles, closest, contact) =>
+      `Top-down replay of a planar simulation run: the AUV visits ${waypoints} waypoints among ${obstacles} moving obstacles. Closest approach ${closest} m, against contact at ${contact} m.`,
+  },
+  es: {
+    badge: "EJECUCIÓN SIMULADA",
+    hud: (nearest, contact) => `dist. mín. ${nearest} m · contacto a ${contact} m`,
+    active: "FILTRO CBF ACTIVO",
+    nominal: "MPC NOMINAL",
+    margin: "MARGEN CBF h(t) · MÍN.",
+    legend: ["AUV", "Filtro activo", "Obstáculo móvil (masa puntual)", "Punto de ruta"],
+    aria: (waypoints, obstacles, closest, contact) =>
+      `Vista cenital de una simulación 2D: el AUV recorre ${waypoints} puntos de ruta entre ${obstacles} obstáculos móviles. Distancia mínima: ${closest} m, frente a contacto a ${contact} m.`,
+  },
+};
 const PAD = 1.2; // metres of margin around the data
 
 const frames = trial.robot.length;
@@ -84,7 +108,8 @@ const activeBands = (() => {
  * waypoints and obstacle motion all at one depth, so what the top-down view
  * shows is the whole geometry and an overlap on screen would be a real contact.
  */
-export function TrialReplay({ label, note }) {
+export function TrialReplay({ label, note, lang = "en" }) {
+  const tx = TEXT[lang];
   const [frame, setFrame] = useState(frames - 1);
   const [paused, setPaused] = useState(false);
   const [ref, inView] = useInView({ threshold: 0.2 });
@@ -106,20 +131,20 @@ export function TrialReplay({ label, note }) {
   return (
     <div className={cx(styles.projectVisual, styles.replayVisual)} ref={ref}>
       <span className={cx(styles.visualLabel, "mono")}>{label}</span>
-      <span className={cx(styles.wipBadge, styles.dataBadge, "mono")}>SIMULATION RUN</span>
+      <span className={cx(styles.wipBadge, styles.dataBadge, "mono")}>{tx.badge}</span>
 
       <div className={styles.visualBody}>
         <div className={cx(styles.replayHud, "mono")} aria-live="off">
           <span>{`t = ${t} s`}</span>
-          <span>{`nearest ${trial.nearest[frame].toFixed(2)} m · contact at ${trial.safetyDistance} m`}</span>
-          <span className={cx(styles.replayMode, active && styles.on)}>{active ? "CBF FILTER ACTIVE" : "NOMINAL MPC"}</span>
+          <span>{tx.hud(trial.nearest[frame].toFixed(2), trial.safetyDistance)}</span>
+          <span className={cx(styles.replayMode, active && styles.on)}>{active ? tx.active : tx.nominal}</span>
         </div>
 
         <svg
           className={styles.replaySvg}
           viewBox={`0 0 ${W.toFixed(2)} ${H.toFixed(2)}`}
           role="img"
-          aria-label={`Top-down replay of a planar simulation run: the AUV visits ${trial.waypoints.length} waypoints among ${trial.obstacles.length} moving obstacles. Closest approach ${trial.summary.closestApproach} m, against contact at ${trial.safetyDistance} m.`}
+          aria-label={tx.aria(trial.waypoints.length, trial.obstacles.length, trial.summary.closestApproach, trial.safetyDistance)}
         >
           <defs>
             <pattern id="replayGrid" width="1" height="1" patternUnits="userSpaceOnUse">
@@ -154,7 +179,7 @@ export function TrialReplay({ label, note }) {
 
         <div className={styles.replayFoot}>
           <div className={styles.spark}>
-            <span className="mono">CBF MARGIN h(t) · MIN {trial.summary.minMargin} &gt; 0</span>
+            <span className="mono">{tx.margin} {trial.summary.minMargin} &gt; 0</span>
             <svg viewBox={`0 0 ${SPARK_W} ${SPARK_H}`} preserveAspectRatio="none" aria-hidden="true">
               {activeBands.map(({ start, end }) => (
                 <rect key={start} x={sparkX(start)} width={Math.max(sparkX(end) - sparkX(start), 0.3)} y="0" height={SPARK_H} className={styles.sparkBand} />
@@ -166,15 +191,16 @@ export function TrialReplay({ label, note }) {
         </div>
 
         <ul className={cx(styles.replayLegend, "mono")} aria-hidden="true">
-          <li><i className={styles.lgRobot} />AUV</li>
-          <li><i className={styles.lgActive} />Filter active</li>
-          <li><i className={styles.lgObstacle} />Moving obstacle (point mass)</li>
-          <li><i className={styles.lgWaypoint}>+</i>Waypoint</li>
+          <li><i className={styles.lgRobot} />{tx.legend[0]}</li>
+          <li><i className={styles.lgActive} />{tx.legend[1]}</li>
+          <li><i className={styles.lgObstacle} />{tx.legend[2]}</li>
+          <li><i className={styles.lgWaypoint}>+</i>{tx.legend[3]}</li>
         </ul>
       </div>
 
       <PlaybackBar
         note={note}
+        lang={lang}
         paused={paused}
         disabled={reduced !== false}
         onToggle={() => setPaused((p) => !p)}

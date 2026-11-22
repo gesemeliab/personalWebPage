@@ -9,11 +9,87 @@ import ladder from "@/data/figures/fusionLadder.json";
 import { PlaybackBar } from "./PlaybackBar";
 import styles from "./Work.module.css";
 
-const LEVELS = ["Clear", "Light", "Moderate", "Heavy"];
+const LEVEL_COUNT = 4;
 const CONDITIONS = [
-  { id: "dark", label: "Darkness", keys: ["clean", "dark_1", "dark_2", "dark_3"] },
-  { id: "turbid", label: "Turbidity", keys: ["clean", "ifm_1C", "ifm_3C", "ifm_5C"] },
+  { id: "dark", keys: ["clean", "dark_1", "dark_2", "dark_3"] },
+  { id: "turbid", keys: ["clean", "ifm_1C", "ifm_3C", "ifm_5C"] },
 ];
+
+/** Every string the viewer shows, per language. */
+const TEXT = {
+  en: {
+    levels: ["Clear", "Light", "Moderate", "Heavy"],
+    conditions: { dark: "Darkness", turbid: "Turbidity" },
+    state: (level, condition) => `${level} ${condition}`.toLowerCase(),
+    clearWater: "clear water",
+    badge: "REAL TEST FRAME",
+    camera: "CAMERA",
+    fromSonar: "{tx.fromSonar}",
+    alsoCamera: "ALSO SEEN BY CAMERA",
+    recovered: "RECOVERED",
+    sonar: "FL SONAR",
+    unaffected: "UNAFFECTED",
+    found: "OBJECTS FOUND",
+    byCamera: "BY CAMERA",
+    bySonar: "RECOVERED BY SONAR",
+    typeLabel: "Degradation type",
+    levelLabel: "Degradation level",
+    cameraAlt: (state) => `Underwater camera frame, ${state}, with the model's detections`,
+    sonarAlt: "Forward-looking sonar fan at the same instant, with the model's sonar detections",
+    legend: [
+      "Detected by the camera",
+      "Recovered by sonar when the camera misses it",
+      "Where the sonar says it likely is (sonar has no height, so it’s a zone, not a box)",
+    ],
+    story: {
+      lostRecovered:
+        "The camera has lost the objects. The sonar still detects one, so the model recovers it and shows where in the image it most likely is.",
+      partial: (cam, total, son) => `The camera still finds ${cam} of ${total}; the sonar recovers ${son} the camera missed.`,
+      clear: (count, echo, all) =>
+        `Clear water: the camera finds ${count} objects${echo ? `, and the sonar detects ${all ? "them" : `${echo} of them`} too` : ""}.`,
+      degraded: (condition, count) =>
+        `The water is getting ${condition === "dark" ? "darker" : "murkier"}, but the camera still finds ${count} objects.`,
+      both: "both",
+      lost: "Neither sensor finds the objects in this frame.",
+    },
+  },
+  es: {
+    levels: ["Ninguna", "Leve", "Moderada", "Intensa"],
+    conditions: { dark: "Oscuridad", turbid: "Turbidez" },
+    state: (level, condition) => `${condition} ${level}`.toLowerCase(),
+    clearWater: "agua clara",
+    badge: "FOTOGRAMA DE PRUEBA REAL",
+    camera: "CÁMARA",
+    fromSonar: "DEL SONAR",
+    alsoCamera: "TAMBIÉN EN LA CÁMARA",
+    recovered: "RECUPERADO",
+    sonar: "SONAR FLS",
+    unaffected: "NO AFECTADO",
+    found: "OBJETOS DETECTADOS",
+    byCamera: "POR LA CÁMARA",
+    bySonar: "RECUPERADOS POR EL SONAR",
+    typeLabel: "Tipo de degradación",
+    levelLabel: "Nivel de degradación",
+    cameraAlt: (state) => `Fotograma de la cámara submarina, ${state}, con las detecciones del modelo`,
+    sonarAlt: "Abanico del sonar de visión frontal en el mismo instante, con las detecciones del modelo",
+    legend: [
+      "Detectado por la cámara",
+      "Recuperado por el sonar cuando la cámara no lo detecta",
+      "Ubicación probable según el sonar (el sonar no mide elevación, por eso se indica una zona y no un recuadro)",
+    ],
+    story: {
+      lostRecovered:
+        "La cámara ya no detecta los objetos. El sonar todavía detecta uno, de modo que el modelo lo recupera y señala dónde es más probable que esté en la imagen.",
+      partial: (cam, total, son) => `La cámara aún detecta ${cam} de ${total}; el sonar recupera ${son} que la cámara no detectó.`,
+      clear: (count, echo, all) =>
+        `Agua clara: la cámara detecta ${count} objetos${echo ? `, y el sonar ${all ? "también los detecta" : `también detecta ${echo}`}` : ""}.`,
+      degraded: (condition, count) =>
+        `El agua se vuelve más ${condition === "dark" ? "oscura" : "turbia"}, pero la cámara aún detecta ${count} objetos.`,
+      both: "ambos",
+      lost: "Ningún sensor detecta los objetos en este fotograma.",
+    },
+  },
+};
 const ALL_KEYS = [...new Set(CONDITIONS.flatMap(({ keys }) => keys))];
 const STEP_MS = 2200;
 const IMG = "/images/work/sonar/ladder";
@@ -29,29 +105,18 @@ const boxStyle = ([x0, y0, x1, y1]) => ({
 });
 
 /** One plain sentence for what the visitor is looking at. */
-function story(level, condition, { foundByCamera: cam, foundBySonarOnly: son, sonarLinked }, total) {
+function story(level, condition, { foundByCamera: cam, foundBySonarOnly: son, sonarLinked }, total, text) {
   const echo = sonarLinked.length;
-  if (son && !cam) {
-    return {
-      tone: "recovered",
-      text: "The camera has lost the objects. The sonar still detects one, so the model recovers it and shows where in the image it most likely is.",
-    };
-  }
-  if (son) {
-    return {
-      tone: "recovered",
-      text: `The camera still finds ${cam} of ${total}; the sonar recovers ${son} the camera missed.`,
-    };
-  }
+  const count = cam === total ? text.both : cam;
+  if (son && !cam) return { tone: "recovered", text: text.lostRecovered };
+  if (son) return { tone: "recovered", text: text.partial(cam, total, son) };
   if (cam) {
     return {
       tone: "camera",
-      text: level === 0
-        ? `Clear water: the camera finds ${cam === total ? "both" : cam} objects${echo ? `, and the sonar detects ${echo === cam ? "them" : `${echo} of them`} too` : ""}.`
-        : `The water is getting ${condition === "dark" ? "darker" : "murkier"}, but the camera still finds ${cam === total ? "both" : cam} objects.`,
+      text: level === 0 ? text.clear(count, echo, echo === cam) : text.degraded(condition, count),
     };
   }
-  return { tone: "lost", text: "Neither sensor finds the objects in this frame." };
+  return { tone: "lost", text: text.lost };
 }
 
 /**
@@ -69,7 +134,8 @@ function story(level, condition, { foundByCamera: cam, foundBySonarOnly: son, so
  * camera boxes are not part of this story). Data:
  * scripts/figures/fusion_ladder.py (test frame, seed 0, 1.0 FPPI).
  */
-export function FusionDiagram({ label, note }) {
+export function FusionDiagram({ label, note, lang = "en" }) {
+  const tx = TEXT[lang];
   const [condition, setCondition] = useState("dark");
   const [level, setLevel] = useState(0);
   const [touched, setTouched] = useState(false);
@@ -80,8 +146,8 @@ export function FusionDiagram({ label, note }) {
   useEffect(() => {
     if (!autoplay) return undefined;
     // Hold longest on the heavy level, where the point is made.
-    const timer = setTimeout(() => setLevel((current) => (current + 1) % LEVELS.length),
-      level === LEVELS.length - 1 ? STEP_MS * 1.8 : STEP_MS);
+    const timer = setTimeout(() => setLevel((current) => (current + 1) % LEVEL_COUNT),
+      level === LEVEL_COUNT - 1 ? STEP_MS * 1.8 : STEP_MS);
     return () => clearTimeout(timer);
   }, [autoplay, level]);
 
@@ -91,19 +157,19 @@ export function FusionDiagram({ label, note }) {
     setLevel(nextLevel);
   };
 
-  const { label: conditionName, keys } = CONDITIONS.find(({ id }) => id === condition);
+  const { keys } = CONDITIONS.find(({ id }) => id === condition);
   const key = keys[level];
   const shown = ladder.levels[key];
   const cameraBoxes = shown.camera.filter((_, i) => !shown.cameraIsFp[i]);
-  const state = level === 0 ? "clear water" : `${LEVELS[level].toLowerCase()} ${conditionName.toLowerCase()}`;
+  const state = level === 0 ? tx.clearWater : tx.state(tx.levels[level], tx.conditions[condition]);
   const total = ladder.linkedObjects;
   const found = shown.foundByCamera + shown.foundBySonarOnly;
-  const { tone, text } = story(level, condition, shown, total);
+  const { tone, text } = story(level, condition, shown, total, tx.story);
 
   return (
     <div className={cx(styles.projectVisual, styles.fusionVisual)} ref={ref}>
       <span className={cx(styles.visualLabel, "mono")}>{label}</span>
-      <span className={cx(styles.wipBadge, styles.dataBadge, "mono")}>REAL TEST FRAME</span>
+      <span className={cx(styles.wipBadge, styles.dataBadge, "mono")}>{tx.badge}</span>
 
       <div className={styles.visualBody}>
         <div className={styles.sensorStage}>
@@ -114,7 +180,7 @@ export function FusionDiagram({ label, note }) {
                   key={k}
                   className={cx(styles.cameraImage, k === key && styles.shown)}
                   src={`${IMG}/${k}.webp`}
-                  alt={k === key ? `Underwater camera frame, ${state}, with the model's detections` : ""}
+                  alt={k === key ? tx.cameraAlt(state) : ""}
                   aria-hidden={k === key ? undefined : true}
                   width={CAM_W}
                   height={CAM_H}
@@ -135,7 +201,7 @@ export function FusionDiagram({ label, note }) {
               ))}
               {cameraBoxes.map((box, i) => (
                 <span key={`${key}-c${i}`} className={cx(styles.detBox, styles.detCam)} style={boxStyle(box)} aria-hidden="true">
-                  <em className="mono">CAMERA</em>
+                  <em className="mono">{tx.camera}</em>
                 </span>
               ))}
               {shown.zonePeak ? (
@@ -149,7 +215,7 @@ export function FusionDiagram({ label, note }) {
               ) : null}
             </div>
             <figcaption className="mono">
-              <span>CAMERA</span>
+              <span>{tx.camera}</span>
               <span className={styles.paneState}>{state.toUpperCase()}</span>
             </figcaption>
           </figure>
@@ -159,25 +225,25 @@ export function FusionDiagram({ label, note }) {
               <Image
                 className={styles.sonarImage}
                 src={`${IMG}/sonar.webp`}
-                alt="Forward-looking sonar fan at the same instant, with the model's sonar detections"
+                alt={tx.sonarAlt}
                 width={SON_W}
                 height={SON_H}
                 sizes="(max-width: 1000px) 40vw, 300px"
               />
               {shown.sonarLinked.map((box, i) => (
                 <span key={`${key}-sl${i}`} className={cx(styles.detBox, styles.detMatch)} style={boxStyle(box)} aria-hidden="true">
-                  <em className="mono">ALSO SEEN BY CAMERA</em>
+                  <em className="mono">{tx.alsoCamera}</em>
                 </span>
               ))}
               {shown.sonarOnly.map((box, i) => (
                 <span key={`${key}-so${i}`} className={cx(styles.detBox, styles.detSonar)} style={boxStyle(box)} aria-hidden="true">
-                  <em className="mono">RECOVERED</em>
+                  <em className="mono">{tx.recovered}</em>
                 </span>
               ))}
             </div>
             <figcaption className="mono">
-              <span>FL SONAR</span>
-              <span className={styles.paneState}>UNAFFECTED</span>
+              <span>{tx.sonar}</span>
+              <span className={styles.paneState}>{tx.unaffected}</span>
             </figcaption>
           </figure>
         </div>
@@ -185,15 +251,15 @@ export function FusionDiagram({ label, note }) {
         <div className={styles.fusionStory} aria-live={touched ? "polite" : "off"}>
           <dl className="mono">
             <div>
-              <dt>OBJECTS FOUND</dt>
+              <dt>{tx.found}</dt>
               <dd className={found ? styles.good : undefined}>{`${found} / ${total}`}</dd>
             </div>
             <div>
-              <dt>BY CAMERA</dt>
+              <dt>{tx.byCamera}</dt>
               <dd>{shown.foundByCamera}</dd>
             </div>
             <div>
-              <dt>RECOVERED BY SONAR</dt>
+              <dt>{tx.bySonar}</dt>
               <dd className={shown.foundBySonarOnly ? styles.sonar : undefined}>{shown.foundBySonarOnly}</dd>
             </div>
           </dl>
@@ -201,21 +267,21 @@ export function FusionDiagram({ label, note }) {
         </div>
 
         <div className={styles.sensorControls}>
-          <div className={styles.segmented} role="group" aria-label="Degradation type">
-            {CONDITIONS.map(({ id, label: name }) => (
+          <div className={styles.segmented} role="group" aria-label={tx.typeLabel}>
+            {CONDITIONS.map(({ id }) => (
               <button
                 key={id}
                 type="button"
                 className="mono"
                 aria-pressed={condition === id}
-                onClick={() => choose(id, level === 0 ? LEVELS.length - 1 : level)}
+                onClick={() => choose(id, level === 0 ? LEVEL_COUNT - 1 : level)}
               >
-                {name}
-              </button>
-            ))}
-          </div>
-          <div className={styles.segmented} role="group" aria-label="Degradation level">
-            {LEVELS.map((name, lv) => (
+              {tx.conditions[id]}
+            </button>
+          ))}
+        </div>
+        <div className={styles.segmented} role="group" aria-label={tx.levelLabel}>
+          {tx.levels.map((name, lv) => (
               <button
                 key={name}
                 type="button"
@@ -230,13 +296,13 @@ export function FusionDiagram({ label, note }) {
         </div>
 
         <ul className={cx(styles.detLegend, "mono")} aria-hidden="true">
-          <li><i className={styles.lgCam} />Detected by the camera</li>
-          <li><i className={styles.lgSonar} />Recovered by sonar when the camera misses it</li>
-          <li><i className={styles.lgZone} />Where the sonar says it likely is (sonar has no height, so it’s a zone, not a box)</li>
+          <li><i className={styles.lgCam} />{tx.legend[0]}</li>
+          <li><i className={styles.lgSonar} />{tx.legend[1]}</li>
+          <li><i className={styles.lgZone} />{tx.legend[2]}</li>
         </ul>
       </div>
 
-      <PlaybackBar note={note} />
+      <PlaybackBar note={note} lang={lang} />
     </div>
   );
 }

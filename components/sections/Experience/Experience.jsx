@@ -1,28 +1,28 @@
 import { cx } from "@/lib/classNames";
 import { SectionLabel } from "@/components/layout/SectionLabel/SectionLabel";
-import { education, timeline } from "@/data/experience";
+import { getContent } from "@/lib/content";
 import { Toolbox } from "./Toolbox";
 import styles from "./Experience.module.css";
 
 /** Education on the left, career timeline on the right, toolbox underneath. */
-export function Experience() {
+export function Experience({ lang }) {
+  const { education, timeline, skills, ui } = getContent(lang);
+  const text = ui.experience;
+
   return (
     <section className={styles.experienceSection} id="experience">
-      <SectionLabel index="04 / EXPERIENCE & EDUCATION" caption="THE PATH SO FAR" />
+      <SectionLabel index={text.label} caption={text.caption} />
 
       <div className={styles.careerGrid}>
         <div>
           <h2>
-            From building
+            {text.heading[0]}
             <br />
-            to understanding.
+            {text.heading[1]}
           </h2>
-          <p className={styles.careerIntro}>
-            Nine years of putting perception on physical robots and into deployment, from
-            a quadrotor to semiconductor fabs to AUVs.
-          </p>
+          <p className={styles.careerIntro}>{text.intro}</p>
 
-          <h3 className={cx(styles.educationTitle, "mono")}>EDUCATION</h3>
+          <h3 className={cx(styles.educationTitle, "mono")}>{text.education}</h3>
           {education.map(({ id, period, degree, institution, note }) => (
             <article className={styles.education} key={id}>
               <span className="mono">{period}</span>
@@ -45,7 +45,7 @@ export function Experience() {
         </div>
       </div>
 
-      <Toolbox />
+      <Toolbox skills={skills} title={text.toolbox} />
     </section>
   );
 }

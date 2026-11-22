@@ -2,31 +2,27 @@ import { ArrowUpRight, Mail } from "lucide-react";
 import { SectionLabel } from "@/components/layout/SectionLabel/SectionLabel";
 import { SiteFooter } from "@/components/layout/SiteFooter/SiteFooter";
 import { LinkList } from "@/components/ui/LinkList/LinkList";
-import { availability, profiles, site } from "@/data/site";
+import { getContent } from "@/lib/content";
 import styles from "./Contact.module.css";
 
-const links = [
-  { label: "LinkedIn", href: profiles.linkedin, external: true },
-  { label: "Scholar", href: profiles.scholar, external: true },
-];
-
 /** Closing section: email, availability note and the site footer. */
-export function Contact() {
+export function Contact({ lang }) {
+  const { site, profiles, availability, ui } = getContent(lang);
+  const text = ui.contact;
+  const links = [
+    { label: "LinkedIn", href: profiles.linkedin, external: true },
+    { label: "Scholar", href: profiles.scholar, external: true },
+  ];
+
   return (
     <section className={styles.contactSection} id="contact">
-      <SectionLabel
-        index="06 / GET IN TOUCH"
-        caption="LET’S BUILD SOMETHING MEANINGFUL"
-        variant="onDark"
-      />
+      <SectionLabel index={text.label} caption={text.caption} variant="onDark" />
 
       <div className={styles.contactGrid}>
         <div>
-          <p className={styles.contactKicker}>
-            Have a question, an idea, or a research opportunity?
-          </p>
+          <p className={styles.contactKicker}>{text.kicker}</p>
           <h2>
-            Let’s connect<span>.</span>
+            {text.heading}<span>.</span>
           </h2>
           <a className={styles.contactEmail} href={`mailto:${site.email}`}>
             {site.email}
@@ -37,11 +33,16 @@ export function Contact() {
         <div className={styles.contactAside}>
           <Mail size={25} />
           <p>{availability.long}</p>
-          <LinkList links={links} variant="aside" />
+          <LinkList links={links} variant="aside" lang={lang} />
         </div>
       </div>
 
-      <SiteFooter year={new Date().getFullYear()} name={site.name} />
+      <SiteFooter
+        year={new Date().getFullYear()}
+        name={site.name}
+        note={text.footerNote}
+        backToTop={text.backToTop}
+      />
     </section>
   );
 }

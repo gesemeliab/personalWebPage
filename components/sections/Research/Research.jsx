@@ -1,24 +1,27 @@
 import { SectionHeading } from "@/components/layout/SectionHeading/SectionHeading";
 import { SectionLabel } from "@/components/layout/SectionLabel/SectionLabel";
-import { researchDirections } from "@/data/research";
+import { getContent } from "@/lib/content";
 import styles from "./Research.module.css";
 
 /** Where the work is headed: for each area, what is done and what is next. */
-export function Research() {
+export function Research({ lang }) {
+  const { researchDirections, ui } = getContent(lang);
+  const text = ui.directions;
+
   return (
     <section className={styles.researchSection} id="directions">
-      <SectionLabel index="05 / DIRECTIONS" caption="DONE SO FAR, AND NEXT" />
+      <SectionLabel index={text.label} caption={text.caption} />
 
       <SectionHeading
-        title="Where the work is headed."
-        description="Each direction starts from the work above."
+        title={text.heading}
+        description={text.description}
       />
 
       <div className={styles.directions}>
         <div className={`${styles.directionsHead} mono`} aria-hidden="true">
-          <span>AREA</span>
-          <span>SO FAR</span>
-          <span>NEXT</span>
+          <span>{text.area}</span>
+          <span>{text.done}</span>
+          <span>{text.next}</span>
         </div>
         {researchDirections.map(({ id, number, title, done, next }) => (
           <article className={styles.direction} key={id}>
@@ -27,11 +30,11 @@ export function Research() {
               {title}
             </h3>
             <div>
-              <span className={`${styles.directionTag} mono`}>SO FAR</span>
+              <span className={`${styles.directionTag} mono`}>{text.done}</span>
               <p>{done}</p>
             </div>
             <div>
-              <span className={`${styles.directionTag} mono`}>NEXT</span>
+              <span className={`${styles.directionTag} mono`}>{text.next}</span>
               <p className={styles.next}>{next}</p>
             </div>
           </article>

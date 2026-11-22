@@ -9,12 +9,12 @@ import styles from "./LinkList.module.css";
  * @param {{label: string, href: string, external?: boolean}[]} links
  * @param {"aside"} [variant] - spacing variant defined in LinkList.module.css.
  */
-export function LinkList({ links, variant, className }) {
+export function LinkList({ links, variant, className, lang }) {
   return (
     <div className={cx(styles.linkList, variant && styles[variant], className)}>
       {links.map(({ label, href, external }) =>
         external ? (
-          <ExternalLink key={href} href={href}>
+          <ExternalLink key={href} href={href} lang={lang}>
             {label}
           </ExternalLink>
         ) : (

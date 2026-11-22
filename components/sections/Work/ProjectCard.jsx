@@ -10,22 +10,22 @@ import { UavDiagram } from "./UavDiagram";
 import styles from "./Work.module.css";
 
 /** The diagram a project asks for through its `visual` field. */
-function ProjectVisual({ project }) {
+function ProjectVisual({ project, lang }) {
   const { visual, visualLabel, visualNote, flow, theme } = project;
 
   switch (visual) {
     case "fusion":
-      return <FusionDiagram label={visualLabel} note={visualNote} />;
+      return <FusionDiagram label={visualLabel} note={visualNote} lang={lang} />;
     case "replay":
-      return <TrialReplay label={visualLabel} note={visualNote} />;
+      return <TrialReplay label={visualLabel} note={visualNote} lang={lang} />;
     case "diffusion":
-      return <DiffusionDiagram label={visualLabel} note={visualNote} />;
+      return <DiffusionDiagram label={visualLabel} note={visualNote} lang={lang} />;
     case "marie":
-      return <MarieDiagram label={visualLabel} note={visualNote} />;
+      return <MarieDiagram label={visualLabel} note={visualNote} lang={lang} />;
     case "rover":
-      return <RoverDiagram label={visualLabel} note={visualNote} />;
+      return <RoverDiagram label={visualLabel} note={visualNote} lang={lang} />;
     case "uav":
-      return <UavDiagram label={visualLabel} note={visualNote} />;
+      return <UavDiagram label={visualLabel} note={visualNote} lang={lang} />;
     default:
       return <FlowDiagram label={visualLabel} flow={flow} theme={theme} />;
   }
@@ -36,12 +36,12 @@ function ProjectVisual({ project }) {
  * closing line with the context and the paper. A `featured` project spans the
  * grid with the diagram beside the text.
  */
-export function ProjectCard({ project, mirrored = false }) {
+export function ProjectCard({ project, lang = "en", mirrored = false }) {
   const { featured, category, number, title, abstract, tags, keyStats, context, link, linkLabel } = project;
 
   return (
     <article className={cx(styles.project, featured && styles.featured, mirrored && styles.mirrored)}>
-      <ProjectVisual project={project} />
+      <ProjectVisual project={project} lang={lang} />
 
       <div className={styles.projectBody}>
         <div className={cx(styles.projectMeta, "mono")}>
@@ -69,7 +69,7 @@ export function ProjectCard({ project, mirrored = false }) {
 
         <div className={styles.projectFoot}>
           <span className="mono">{context}</span>
-          {link ? <ExternalLink href={link}>{linkLabel}</ExternalLink> : null}
+          {link ? <ExternalLink href={link} lang={lang}>{linkLabel}</ExternalLink> : null}
         </div>
       </div>
     </article>

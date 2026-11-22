@@ -104,13 +104,40 @@ const ARROWS = [-160, -120, -60, -20, 20, 60, 120, 160].map((deg) => {
 });
 
 const STAGES = [
-  { id: "noise", text: "Noise", sub: "random controls" },
-  { id: "denoise", text: "Denoise", sub: "1D U-Net (DDPM)" },
-  { id: "guide", text: "CBF guidance", sub: "∇h at every step" },
-  { id: "out", text: "Controls → Fossen", sub: "8 s plan" },
+  { id: "noise", text: { en: "Noise", es: "Ruido" }, sub: { en: "random controls", es: "controles aleatorios" } },
+  { id: "denoise", text: { en: "Denoise", es: "Eliminación de ruido" }, sub: { en: "1D U-Net (DDPM)", es: "U-Net 1D (DDPM)" } },
+  { id: "guide", text: { en: "CBF guidance", es: "Guiado CBF" }, sub: { en: "∇h at every step", es: "∇h en cada paso" } },
+  { id: "out", text: { en: "Controls → Fossen", es: "Controles → Fossen" }, sub: { en: "8 s plan", es: "plan de 8 s" } },
 ];
 
-export function DiffusionDiagram({ label, note }) {
+/** Every other string the animation shows, per language. */
+const TEXT = {
+  en: {
+    badge: "CONCEPT ILLUSTRATION",
+    step: "DENOISING STEP k =",
+    obstacle: "OBSTACLE UNSEEN IN TRAINING",
+    start: "START",
+    goal: "GOAL",
+    pipeline: "Pipeline",
+    legend: ["Guided sample", "Where it would go unguided"],
+    aria:
+      "Concept illustration: noisy trajectory samples between a start and a goal are denoised step by step, while a control barrier function's gradient pushes them away from an obstacle unseen in training, ending as smooth plans that go around it.",
+  },
+  es: {
+    badge: "ILUSTRACIÓN CONCEPTUAL",
+    step: "PASO DE ELIMINACIÓN DE RUIDO k =",
+    obstacle: "OBSTÁCULO AUSENTE EN EL ENTRENAMIENTO",
+    start: "INICIO",
+    goal: "META",
+    pipeline: "Flujo de procesamiento",
+    legend: ["Muestra guiada", "Trayectoria sin guiado"],
+    aria:
+      "Ilustración conceptual: muestras ruidosas de trayectoria entre un inicio y una meta se depuran paso a paso, mientras el gradiente de una función de barrera de control las aleja de un obstáculo ausente en el entrenamiento, hasta obtener planes suaves que lo rodean.",
+  },
+};
+
+export function DiffusionDiagram({ label, note, lang = "en" }) {
+  const tx = TEXT[lang];
   const [k, setK] = useState(0);
   const [paused, setPaused] = useState(false);
   const [ref, inView] = useInView({ threshold: 0.25 });
@@ -132,11 +159,11 @@ export function DiffusionDiagram({ label, note }) {
   return (
     <div className={cx(styles.projectVisual, styles.diffusionVisual)} ref={ref}>
       <span className={cx(styles.visualLabel, "mono")}>{label}</span>
-      <span className={cx(styles.wipBadge, "mono")}>CONCEPT ILLUSTRATION</span>
+      <span className={cx(styles.wipBadge, "mono")}>{tx.badge}</span>
 
       <div className={styles.visualBody}>
         <div className={cx(styles.dfReadout, "mono")} aria-hidden="true">
-          <span>{`DENOISING STEP k = ${String(k).padStart(2, "0")} / ${K}`}</span>
+          <span>{`${tx.step} ${String(k).padStart(2, "0")} / ${K}`}</span>
           <span className={styles.dfTrack}><span style={{ width: `${late * 100}%` }} /></span>
         </div>
 
@@ -144,7 +171,7 @@ export function DiffusionDiagram({ label, note }) {
           className={styles.dfSvg}
           viewBox="0 0 320 170"
           role="img"
-          aria-label="Concept illustration: noisy trajectory samples between a start and a goal are denoised step by step, while a control barrier function's gradient pushes them away from an obstacle unseen in training, ending as smooth plans that go around it."
+          aria-label={tx.aria}
         >
           <defs>
             <radialGradient id="dfObsGlow">
@@ -161,7 +188,7 @@ export function DiffusionDiagram({ label, note }) {
           <circle cx={C[0]} cy={C[1]} r={R_OBS} className={styles.dfObstacle} />
           <text x={C[0]} y={C[1] + 3} textAnchor="middle" className={styles.dfObsText}>h(x) &lt; 0</text>
           <path d={`M${C[0]} ${C[1] + R_OBS + 2}L${C[0]} 154`} className={styles.dfLeader} />
-          <text x={C[0]} y={164} textAnchor="middle" className={styles.svgLabel}>OBSTACLE UNSEEN IN TRAINING</text>
+          <text x={C[0]} y={164} textAnchor="middle" className={styles.svgLabel}>{tx.obstacle}</text>
 
           {SAMPLES.filter(({ hit }) => hit).map(({ base }, j) => (
             <path key={`ghost-${j}`} d={ghost(base)} className={styles.dfGhost} style={{ opacity: settled ? 0.9 : late * 0.35 }} />
@@ -172,33 +199,34 @@ export function DiffusionDiagram({ label, note }) {
           ))}
 
           <circle cx={S[0]} cy={S[1]} r="4" className={styles.dfStart} />
-          <text x={S[0] - 2} y={S[1] + 16} className={styles.svgLabel}>START</text>
+          <text x={S[0] - 2} y={S[1] + 16} className={styles.svgLabel}>{tx.start}</text>
           <path d={`M${G[0] - 5} ${G[1] - 5}L${G[0] + 5} ${G[1] + 5}M${G[0] + 5} ${G[1] - 5}L${G[0] - 5} ${G[1] + 5}`} className={styles.dfGoal} />
-          <text x={G[0] + 2} y={G[1] - 10} textAnchor="end" className={styles.svgLabel}>GOAL</text>
+          <text x={G[0] + 2} y={G[1] - 10} textAnchor="end" className={styles.svgLabel}>{tx.goal}</text>
         </svg>
 
-        <ol className={cx(styles.dfStages, "mono")} aria-label="Pipeline">
+        <ol className={cx(styles.dfStages, "mono")} aria-label={tx.pipeline}>
           {STAGES.map(({ id, text, sub }) => (
             <li
               key={id}
               className={cx((id === stage || (id === "guide" && guideOn)) && styles.on)}
             >
-              <strong>{text}</strong>
-              <span>{sub}</span>
+              <strong>{text[lang]}</strong>
+              <span>{sub[lang]}</span>
             </li>
           ))}
         </ol>
 
         <div className={styles.dfFoot}>
           <ul className={cx(styles.dfLegend, "mono")} aria-hidden="true">
-            <li><i />Guided sample</li>
-            <li><i className={styles.lgUnguided} />Where it would go unguided</li>
+            <li><i />{tx.legend[0]}</li>
+            <li><i className={styles.lgUnguided} />{tx.legend[1]}</li>
           </ul>
         </div>
       </div>
 
       <PlaybackBar
         note={note}
+        lang={lang}
         paused={paused}
         disabled={reduced !== false}
         onToggle={() => setPaused((p) => !p)}

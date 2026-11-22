@@ -2,10 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
-import { heroTyping } from "@/data/site";
 import styles from "./Hero.module.css";
-
-const { prompt, phrases, sentence } = heroTyping;
 
 const ERASE_MS = 42; // per character, while erasing
 const TYPE_MS = 75; // per character, while typing
@@ -18,7 +15,7 @@ const GAP_MS = 300; // pause on an empty line before the next phrase
  * Screen readers are given the whole sentence rather than the animation, since
  * announcing a line character by character would be unusable.
  */
-function Line({ text }) {
+function Line({ text, prompt, sentence }) {
   return (
     <div className={styles.terminal}>
       <span aria-hidden="true">
@@ -32,7 +29,7 @@ function Line({ text }) {
 }
 
 /** Types each phrase, erases it, and moves to the next, forever. */
-function AnimatedLine() {
+function AnimatedLine({ prompt, phrases, sentence }) {
   const [text, setText] = useState(phrases[0]);
 
   useEffect(() => {
@@ -64,9 +61,9 @@ function AnimatedLine() {
 
     timer = setTimeout(tick, HOLD_MS);
     return () => clearTimeout(timer);
-  }, []);
+  }, [phrases]);
 
-  return <Line text={text} />;
+  return <Line text={text} prompt={prompt} sentence={sentence} />;
 }
 
 /**
@@ -77,7 +74,11 @@ function AnimatedLine() {
  * a finished sentence with or without JavaScript. Swapping between the two
  * remounts the animation rather than resetting it from an effect.
  */
-export function TypingLine() {
+export function TypingLine({ prompt, phrases, sentence }) {
   const reduced = usePrefersReducedMotion();
-  return reduced === false ? <AnimatedLine /> : <Line text={phrases[0]} />;
+  return reduced === false ? (
+    <AnimatedLine prompt={prompt} phrases={phrases} sentence={sentence} />
+  ) : (
+    <Line text={phrases[0]} prompt={prompt} sentence={sentence} />
+  );
 }

@@ -3,8 +3,8 @@ import { cx } from "@/lib/classNames";
 import { SectionHeading } from "@/components/layout/SectionHeading/SectionHeading";
 import { SectionLabel } from "@/components/layout/SectionLabel/SectionLabel";
 import { ExternalLink } from "@/components/ui/ExternalLink/ExternalLink";
-import { publicationNote, publications, selfNames } from "@/data/publications";
-import { profiles } from "@/data/site";
+import { selfNames } from "@/data/publications";
+import { getContent } from "@/lib/content";
 import styles from "./Publications.module.css";
 
 // Longest name first, so "G. G. Mejia" is matched whole rather than as "G. Mejia".
@@ -21,15 +21,18 @@ function Authors({ authors }) {
 }
 
 /** Publication list, newest first. */
-export function Publications() {
+export function Publications({ lang }) {
+  const { publications, publicationNote, profiles, ui } = getContent(lang);
+  const text = ui.publications;
+
   return (
     <section className={styles.publicationsSection} id="publications">
-      <SectionLabel index="03 / PUBLICATIONS" caption="SHARING THE WORK" />
+      <SectionLabel index={text.label} caption={text.caption} />
 
       <SectionHeading
         variant="tight"
-        title="Written & published."
-        action={<ExternalLink href={profiles.scholar}>Google Scholar</ExternalLink>}
+        title={text.heading}
+        action={<ExternalLink href={profiles.scholar} lang={lang}>Google Scholar</ExternalLink>}
       />
 
       <p className={styles.publicationNote}>{publicationNote}</p>
@@ -42,7 +45,7 @@ export function Publications() {
               {href ? (
                 <a href={href} target="_blank" rel="noopener noreferrer">
                   {title}
-                  <span className="sr-only"> (opens in a new tab)</span>
+                  <span className="sr-only">{` ${ui.newTab}`}</span>
                 </a>
               ) : (
                 title
@@ -59,7 +62,7 @@ export function Publications() {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`Read ${title} (opens in a new tab)`}
+              aria-label={`${text.read(title)} ${ui.newTab}`}
             >
               <ArrowUpRight size={22} />
             </a>

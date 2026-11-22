@@ -3,21 +3,23 @@ import { MapPin } from "lucide-react";
 import { SectionLabel } from "@/components/layout/SectionLabel/SectionLabel";
 import { LinkList } from "@/components/ui/LinkList/LinkList";
 import { cx } from "@/lib/classNames";
-import { profiles, site } from "@/data/site";
+import { getContent } from "@/lib/content";
 import sectionStyles from "@/styles/section.module.css";
 import styles from "./About.module.css";
 
-const links = [
-  { label: "Google Scholar", href: profiles.scholar, external: true },
-  { label: "LinkedIn", href: profiles.linkedin, external: true },
-  { label: "Email", href: `mailto:${site.email}` },
-];
-
 /** Profile card and the personal introduction. */
-export function About() {
+export function About({ lang }) {
+  const { site, profiles, ui } = getContent(lang);
+  const text = ui.about;
+  const links = [
+    { label: "Google Scholar", href: profiles.scholar, external: true },
+    { label: "LinkedIn", href: profiles.linkedin, external: true },
+    { label: text.email, href: `mailto:${site.email}` },
+  ];
+
   return (
     <section className={sectionStyles.section} id="about">
-      <SectionLabel index="01 / ABOUT" caption="A LITTLE CONTEXT" variant="plain" />
+      <SectionLabel index={text.label} caption={text.caption} variant="plain" />
 
       <div className={styles.aboutGrid}>
         <div className={styles.profileCard}>
@@ -38,29 +40,15 @@ export function About() {
 
         <div className={styles.aboutCopy}>
           <h2>
-            Curious by nature.
+            {text.heading[0]}
             <br />
-            Hands-on by design.
+            {text.heading[1]}
           </h2>
-          <p className={styles.largeCopy}>
-            Robot perception for decision-making: turning multimodal sensor data into
-            representations of the world that robots can act on for navigation and planning.
-          </p>
-          <p>
-            Ph.D. student in Electrical and Computer Engineering at Rochester Institute of
-            Technology and Graduate Research Assistant in KAS Lab, advised by Prof. Mohammad Javad
-            Khojasteh. Current research focuses on perception that withstands sensor degradation on
-            underwater robots, fusing camera and sonar so that an AUV keeps perceiving its
-            surroundings as visibility drops. Broader interests include world models (JEPA),
-            diffusion models for planning, and MPC driven by learned perception.
-          </p>
-          <p>
-            Nine years of experience deploying perception on physical robots: quad-rotors, field
-            rovers and AUVs. Previously, four and a half years at Intel Labs, architecting a
-            real-time multimodal perception system taken from research prototype to deployment in
-            three semiconductor fabs worldwide.
-          </p>
-          <LinkList links={links} />
+          <p className={styles.largeCopy}>{text.lead}</p>
+          {text.body.map((paragraph) => (
+            <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+          ))}
+          <LinkList links={links} lang={lang} />
         </div>
       </div>
     </section>
