@@ -10,6 +10,10 @@
   transform: rotate(-2deg);
   transition: transform .45s;
   align-self: center;
+  /* Composite the tilted card on its own layer so the photo is filtered smoothly
+     instead of resampled pixel by pixel - otherwise it looks grainy. */
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .profileCard:hover {
@@ -25,12 +29,14 @@
 }
 
 .portraitFrame img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
+  /* The files are already cropped to the desktop frame; cover handles the
+     slightly different frame shapes at smaller breakpoints. */
   object-fit: cover;
-  /* The source is a tall 9:16 headshot and the frame is near-square, so bias the
-     crop upwards - centred would cut the top of the head off. */
-  object-position: center 16%;
+  object-position: center top;
 }
 
 .profileCross {

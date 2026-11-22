@@ -34,12 +34,17 @@ Two constraints govern any replacement:
 Landscape, and the intrinsic dimensions in `components/sections/Hero/HeroArt.jsx`
 must match the file, or the page shifts as it loads.
 
-### `public/images/portrait.jpg`
+### `public/images/portrait-345.jpg`, `-690.jpg`, `-1035.jpg`
 
 A photograph of the author, used in the about section.
 
-The source is a tall 9:16 headshot and the frame is near-square, so
-`About.module.css` biases the crop upward with `object-position: center 16%`.
+The page never shows the original photo directly. The browser would shrink it in
+one step inside the tilted card, and fine textures would come out grainy.
+`scripts/portrait.ps1` crops the original to the frame's shape and resamples it to
+1x, 2x and 3x of the 345 × 325 px frame; the page serves the matching file through
+`srcSet`. To change the photo, run
+`pwsh scripts/portrait.ps1 <photo> [-Top 0.32]`, where `-Top` moves the crop down
+(0 = top edge, 1 = bottom edge).
 A centred crop cuts off the top of the head.
 
 ## Project visuals

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { MapPin } from "lucide-react";
 import { SectionLabel } from "@/components/layout/SectionLabel/SectionLabel";
 import { LinkList } from "@/components/ui/LinkList/LinkList";
@@ -24,7 +23,10 @@ export function About({ lang }) {
       <div className={styles.aboutGrid}>
         <div className={styles.profileCard}>
           <div className={styles.portraitFrame}>
-            <Image src={site.portrait} alt={site.name} fill sizes="345px" />
+            {/* A plain <img>: the static export serves no image optimiser, so the
+                density variants are pre-scaled files (scripts/portrait.ps1). */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={site.portrait.src} srcSet={site.portrait.srcSet} alt={site.name} width={345} height={325} decoding="async" />
             <span className={cx(styles.profileCross, "mono")} aria-hidden="true">
               +
             </span>

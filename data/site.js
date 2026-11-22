@@ -10,7 +10,11 @@ export const site = {
   coordinates: "ROCHESTER, NY · 43.16° N",
   disciplines: "ROBOT PERCEPTION FOR DECISION-MAKING",
   email: "gg2673@rit.edu",
-  portrait: "/images/portrait.jpg",
+  // Pre-scaled by scripts/portrait.ps1 from the original photo: 1x, 2x and 3x of the frame.
+  portrait: {
+    src: "/images/portrait-345.jpg",
+    srcSet: "/images/portrait-345.jpg 1x, /images/portrait-690.jpg 2x, /images/portrait-1035.jpg 3x",
+  },
 };
 
 export const profiles = {
